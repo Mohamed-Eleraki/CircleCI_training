@@ -1,26 +1,37 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
+jobs: 
+  Build:  # Job Name
+    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
+      - image: cimg/python:3.11.3  # Spcecify The python image.
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - run: python --version  # print out python version
       - run:
-          name: "Say hello"
-          command: "echo Hello, Mohamed!"
+          name: "Build Python app"
+          command: |
+            #cd python
+            #python main.py
+            python --version
+
+  Scan:  # Job Name
+    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
+      - image: cimg/python:3.11.3  # Spcecify The python image.
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - run: python --version  # print out python version
+      - run:
+          name: "Scan Python app"
+          command: |
+            #cd python
+            #python mainscan.py
+            python --version
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
+      - Build
+      - Scan
