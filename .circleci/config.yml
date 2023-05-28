@@ -34,5 +34,5 @@ workflows:
   default:
     jobs:
       - Build
-      - Scan:
+      - Scan:  # this stage will run after Build stage
           requires: [Build]
