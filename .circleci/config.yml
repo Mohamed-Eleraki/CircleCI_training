@@ -70,7 +70,7 @@ workflows:
           requires: [hold]
 
       - Scan_Deploy:
-          requires: [hold, Deploy, Scan_Build]
+          requires: [Deploy]
           #filters:
           #  branches:
           #    only: [master]
