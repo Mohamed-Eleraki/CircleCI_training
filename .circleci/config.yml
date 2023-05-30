@@ -64,5 +64,8 @@ workflows:
           requires: [Build]
       - Scan_Deploy:
           requires: [Deploy, Scan_Build]
+          filters:
+            branches:
+              only: [master]
 
       
