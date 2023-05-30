@@ -67,10 +67,10 @@ workflows:
           requires: [Scan_Build]
 
       - Deploy:
-          requires: [Build]
-          
+          requires: [hold]
+
       - Scan_Deploy:
-          requires: [Deploy, Scan_Build]
+          requires: [hold, Deploy, Scan_Build]
           #filters:
           #  branches:
           #    only: [master]
