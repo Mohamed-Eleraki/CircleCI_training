@@ -63,6 +63,6 @@ workflows:
       - Deploy:
           requires: [Build]
       - Scan_Deploy:
-          requires: [Deploy]
-          requires: [Scan_Build]
+          requires: [Deploy, Scan_Build]
+          #requires: [Scan_Build]
       
