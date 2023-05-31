@@ -66,8 +66,8 @@ workflows:
     jobs:
       - Build
 
-      - Scan_Build
-      #    requires: [Build]
+      - Scan_Build:
+          requires: [Build]
 #
       #- hold:
       #    type: approval
