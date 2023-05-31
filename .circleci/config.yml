@@ -13,7 +13,7 @@ jobs:
           command: |
             cd python
             pwd
-            python3 main.py >> circleci/project/python/python-output
+            python3 main.py >> /home/circleci/project/python/python-output
       - persist_to_workspace:
           root: ~/
           paths:
