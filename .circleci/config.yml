@@ -13,11 +13,11 @@ jobs:
           command: |
             cd python
             pwd
-            python3 main.py >> /home/circleci/project/python/python-output
+            python3 main.py >> circleci/project/python/python-output
       - persist_to_workspace:
           root: ~/
           paths:
-            - /home/circleci/project/python/python-output
+            - circleci/project/python/python-output
 
 
   Scan_Build:  # Job Name
@@ -33,7 +33,7 @@ jobs:
             python3 main_scan.py
       - attach_workspace:
           at: ~/
-      - run: cat /home/circleci/project/python/python-output
+      - run: cat circleci/project/python/python-output
             
 #  Deploy:  # Job Name
 #    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
