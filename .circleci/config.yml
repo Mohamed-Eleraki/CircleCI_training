@@ -19,6 +19,7 @@ jobs:
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - install_awscli
+      - run: aws --version
       - run: python --version  # print out python version
       - run:
           name: "Build Python app"
@@ -57,6 +58,7 @@ jobs:
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - install_awscli
+      - run: aws --version
       - run: python --version  # print out python version
       - run:
           name: "Build Python app"
