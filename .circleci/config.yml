@@ -77,14 +77,12 @@ workflows:
       #    requires: [hold]
 #
       #- Scan_Deploy:
-<<<<<<< HEAD
+
         #  requires: [Deploy, Scan_Build]
 #
-=======
+
          # requires: [Deploy]
           #filters:
           #  branches:
           #    only: [master]
 
->>>>>>> 5a7a95d026d6471811677d9e578dbc3c69c76aa1
-      
