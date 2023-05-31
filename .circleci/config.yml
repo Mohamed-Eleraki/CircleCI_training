@@ -4,7 +4,7 @@ version: 2.1
 parameters:
   release-tag:
     type: string
-    default: "Release name"
+    default: " "
   boolean-tag:
     type: boolean
     default: false
