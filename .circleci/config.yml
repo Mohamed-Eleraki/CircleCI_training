@@ -12,7 +12,7 @@ jobs:
           name: "Build Python app"
           command: |
             cd python
-            python3 main.py >> python/python-output
+            python3 main.py >> .circleci/python/python-output
       - persist_to_workspace:
           root: ~/
           paths:
