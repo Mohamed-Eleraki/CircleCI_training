@@ -12,9 +12,10 @@ jobs:
           name: "Build Python app"
           command: |
             cd python
-            python3 main.py >> /home/circleci/python-output.txt
+            python3 main.py
+
       - run: mkdir -p workspace 
-      - run: echo "Hello, workspace" > workspace/echo-output
+      - run: echo "Hello, Workspace" > workspace/echo-output
 
       - persist_to_workspace:
           root: workspace
@@ -33,35 +34,44 @@ jobs:
           command: |
             cd python
             python3 main_scan.py
+
       - attach_workspace:
           at: /tmp/workspace
       - run: cat  /tmp/workspace/echo-output
             
-#  Deploy:  # Job Name
-#    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-#      - image: cimg/python:3.11.3  # Spcecify The python image.
-#    steps:  # Job Steps
-#      - checkout  # checkout code from GitHub
-#      - run: python --version  # print out python version
-#      - run:
-#          name: "Build Python app"
-#          command: |
-#            cd python
-#            python3 main.py 
-#
-#  Scan_Deploy:  # Job Name
-#    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-#      - image: cimg/python:3.11.3  # Spcecify The python image.
-#    steps:  # Job Steps
-#      - checkout  # checkout code from GitHub
-#      - run: python --version  # print out python version
-#      - run:
-#          name: "Scan Python app"
-#          command: |
-#            cd python
-#            python3 main_scan.py
-#
-#            
+  Deploy:  # Job Name
+    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
+      - image: cimg/python:3.11.3  # Spcecify The python image.
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - run: python --version  # print out python version
+      - run:
+          name: "Build Python app"
+          command: |
+            cd python
+            python3 main.py 
+
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: cat  /tmp/workspace/echo-output
+
+  Scan_Deploy:  # Job Name
+    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
+      - image: cimg/python:3.11.3  # Spcecify The python image.
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - run: python --version  # print out python version
+      - run:
+          name: "Scan Python app"
+          command: |
+            cd python
+            python3 main_scan.py
+
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: cat  /tmp/workspace/echo-output
+
+            
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
@@ -71,21 +81,10 @@ workflows:
 
       - Scan_Build:
           requires: [Build]
-#
-      #- hold:
-      #    type: approval
-      #    requires: [Scan_Build]
-#
-      #- Deploy:
-      #    requires: [hold]
-#
-      #- Scan_Deploy:
 
-        #  requires: [Deploy, Scan_Build]
-#
+      - Deploy:
+          requires: [Build]
 
-         # requires: [Deploy]
-          #filters:
-          #  branches:
-          #    only: [master]
+      - Scan_Deploy:
+          requires: [Deploy, Scan_Build]
 
