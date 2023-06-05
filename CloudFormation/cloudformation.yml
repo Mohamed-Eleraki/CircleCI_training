@@ -1,0 +1,16 @@
+Description: >
+  circleci project.
+
+Parameters:
+  ID:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: test02 
+      #ImageId: ami-0c4f7023847b90238
+      ImageId: ami-06ebb7936bfa62864
