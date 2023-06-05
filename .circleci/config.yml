@@ -28,7 +28,7 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
 
 jobs: 
-  Build:  # Job Name
+  Build-ec2:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
@@ -36,10 +36,17 @@ jobs:
       - checkout  # checkout code from GitHub
       - run: aws s3 ls  # print out s3 bucket list for test
       - run: pwd
-            
+      - run:
+          name: Build ec2 instance
+          command: |
+            aws cloudformation deploy \
+              --template-file CloudFormation/cloudformation.yml \
+              --tags project=circleci \
+              --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
 workflows:
   default:
     jobs:
-      - Build
+      - Build-ec2
 
