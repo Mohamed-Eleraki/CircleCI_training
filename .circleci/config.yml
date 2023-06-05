@@ -44,7 +44,7 @@ jobs:
               --tags project=circleci \
               --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run:
+      - run: #test
           name: Build commands
           when: on_fail
           command: |
