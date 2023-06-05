@@ -12,99 +12,33 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>
+            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
+
 jobs: 
   Build:  # Job Name
-    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-      - image: cimg/python:3.11.3  # Spcecify The python image.
-
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
-      - run: python --version  # print out python version
-      - run:
-          name: "Build Python app"
-          command: |
-            cd python
-            python3 main.py
-
-      - run: mkdir -p workspace 
-      - run: echo "Hello, Workspace" > workspace/echo-output
-
-      # call parameters section     
-      - run:
-          name: "call parameters"
-          command: |
-            echo "release name is ${RELEASENAME}"
-            echo "Working directory is ${WORKINGDIR}"
-
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - echo-output
-
-
-  Scan_Build:  # Job Name
-    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-      - image: cimg/python:3.11.3  # Spcecify The python image.
-    steps:  # Job Steps
-      - checkout  # checkout code from GitHub
-      - run: python --version  # print out python version
-      - run:
-          name: "Scan Python app"
-          command: |
-            cd python
-            python3 main_scan.py
-
-      - attach_workspace:
-          at: /tmp/workspace
-      - run: cat  /tmp/workspace/echo-output
+      - run: aws s3 ls  # print out s3 bucket list for test
             
-  Deploy:  # Job Name
-    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-      - image: cimg/python:3.11.3  # Spcecify The python image.
-    steps:  # Job Steps
-      - checkout  # checkout code from GitHub
-      - run: python --version  # print out python version
-      - run:
-          name: "Build Python app"
-          command: |
-            cd python
-            python3 main.py 
 
-      - attach_workspace:
-          at: /tmp/workspace
-      - run: cat  /tmp/workspace/echo-output
-
-  Scan_Deploy:  # Job Name
-    docker:  # in this example will built our code in docker container, however you can use linux, macOS, etc..
-      - image: cimg/python:3.11.3  # Spcecify The python image.
-    steps:  # Job Steps
-      - checkout  # checkout code from GitHub
-      - run: python --version  # print out python version
-      - run:
-          name: "Scan Python app"
-          command: |
-            cd python
-            python3 main_scan.py
-
-      - attach_workspace:
-          at: /tmp/workspace
-      - run: cat  /tmp/workspace/echo-output
-
-            
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   default:
     jobs:
       - Build
-
-      - Scan_Build:
-          requires: [Build]
-
-      - Deploy:
-          requires: [Build]
-
-      - Scan_Deploy:
-          requires: [Deploy, Scan_Build]
 
