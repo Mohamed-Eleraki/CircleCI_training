@@ -11,6 +11,6 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      KeyName: test02 
+      KeyName: ec2_01 
       ImageId: ami-0c4f7023847b90238
       #ImageId: ami-06ebb7936bfa62864
