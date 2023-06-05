@@ -48,7 +48,7 @@ jobs:
           name: Build commands
           when: on_fail
           command: |
-            aws cloudformation describe-stack-events --stack-name Circleci-28b3540
+            aws cloudformation describe-stack-events --stack-name Circleci-e786873
 
 workflows:
   default:
