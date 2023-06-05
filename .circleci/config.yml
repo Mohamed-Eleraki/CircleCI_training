@@ -35,6 +35,7 @@ jobs:
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - run: aws s3 ls  # print out s3 bucket list for test
+      - run: pwd
             
 
 workflows:
