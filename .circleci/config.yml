@@ -43,7 +43,8 @@ jobs:
             pip install flask
 
             cd python
-            python main.py
+            #python main.py
+            nohup python main.py > output.log &
       
       - run:
           name: Test Application
