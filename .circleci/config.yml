@@ -49,7 +49,8 @@ jobs:
       - run:
           name: Test Application
           command: |
-            curl http://localhost:5000 > python_WebApp.html 
+            curl http://localhost:5000 > python_WebApp.html
+            ls
             head python_WebApp.html
 
       - run:
