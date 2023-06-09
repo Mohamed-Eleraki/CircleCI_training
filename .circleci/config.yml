@@ -44,7 +44,7 @@ jobs:
 
             cd python
             #python main.py
-            nohup python main.py > output.log &
+            nohup python3 main.py > output.log &
       
       - run:
           name: Test Application
