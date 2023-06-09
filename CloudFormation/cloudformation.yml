@@ -14,3 +14,13 @@ Resources:
       KeyName: ec2_01 
       ImageId: ami-0c4f7023847b90238
       #ImageId: ami-06ebb7936bfa62864
+
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y python3
+          git clone https://github.com/Mohamed-Eleraki/CircleCI_training.git
+          cd CircleCI_training/python/
+          python3 main.py
+
