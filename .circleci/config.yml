@@ -85,11 +85,11 @@ jobs:
       - run:
           name: Build ec2 instance
           command: |
-            #aws cloudformation deploy \
-              #--template-file CloudFormation/cloudformation.yml \
-              #--tags project=circleci \
-              #--stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
-              #--parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation deploy \
+              --template-file CloudFormation/cloudformation.yml \
+              --tags project=circleci \
+              --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Print faild events
           when: on_fail
