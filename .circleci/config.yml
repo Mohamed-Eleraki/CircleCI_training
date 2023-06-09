@@ -117,7 +117,7 @@ jobs:
           command: |
             pwd
             aws cloudformation describe-stacks \
-            --stack-name my-stack \
+            --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' \
             --output text
 
