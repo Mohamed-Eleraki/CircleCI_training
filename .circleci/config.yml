@@ -115,11 +115,13 @@ jobs:
       - run:
           name: Fetch the ec2 Pub IP
           command: |
-            pwd
             aws cloudformation describe-stacks \
             --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' \
             --output text
+            pwd
+            
+      - run: ls -lh; cat text
 
       - run:
           name: SSH & Build python app
