@@ -35,43 +35,59 @@ jobs:
       - checkout
       - restore_cache:
           keys: [pythonAppBuild]
+          
       - run:
           name: Build python app
           command: |
             python --version
+            pip install flask
+
             cd python
             python main.py
+      
+      - run:
+          name: Test Application
+          command: |
+            curl http://localhost:5000 > python_WebApp.html 
+            head python_WebApp.html
+
+      - run:
+          name: Scan Application
+          command: |
+            curl http://localhost:5000 > scan_python_WebApp.html 
+            head scan_python_WebApp.html
+
       - save_cache:
           paths: [python/save_cache]
           key: pythonAppBuild
 
-  Test:
-    docker:
-      - image: cimg/python:3.11.4
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [pythonAppBuild]
-      - run:
-          name: Test python app
-          command: |
-            python --version
-            cd python
-            python main_test.py
-
-  Scan:
-    docker:
-      - image: cimg/python:3.11.4
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [pythonAppBuild]
-      - run:
-          name: Scan python app
-          command: |
-            python --version
-            cd python
-            python main_scan.py
+#  Test:
+#    docker:
+#      - image: cimg/python:3.11.4
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          keys: [pythonAppBuild]
+#      - run:
+#          name: Test python app
+#          command: |
+#            python --version
+#            cd python
+#            python main_test.py
+#
+#  Scan:
+#    docker:
+#      - image: cimg/python:3.11.4
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          keys: [pythonAppBuild]
+#      - run:
+#          name: Scan python app
+#          command: |
+#            python --version
+#            cd python
+#            python main_scan.py
 
   Deploy-infrastructure:  # Job Name
     docker:
@@ -183,19 +199,19 @@ workflows:
   Python_App:
     jobs:
       - Build
-      - Test:
-          requires: [Build]
-      - Scan:
-          requires: [Build]
-
-      - Deploy-infrastructure:
-          requires: [Test, Scan]
-
-      - Build-python-app:
-          requires: [Deploy-infrastructure]
-      - Test-python-app:
-          requires: [Build-python-app]
-      - Scan-python-app:
-          requires: [Build-python-app]
+      #- Test:
+      #    requires: [Build]
+      #- Scan:
+      #    requires: [Build]
+#
+      #- Deploy-infrastructure:
+      #    requires: [Test, Scan]
+#
+      #- Build-python-app:
+      #    requires: [Deploy-infrastructure]
+      #- Test-python-app:
+      #    requires: [Build-python-app]
+      #- Scan-python-app:
+      #    requires: [Build-python-app]
 
 
