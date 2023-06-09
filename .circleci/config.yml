@@ -34,7 +34,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: [pythonAppBuild]
+          keys: [pythonAppBuild]
       - run:
           name: Build python app
           command: |
@@ -51,7 +51,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: [pythonAppBuild]
+          keys: [pythonAppBuild]
       - run:
           name: Test python app
           command: |
@@ -65,7 +65,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: [pythonAppBuild]
+          keys: [pythonAppBuild]
       - run:
           name: Scan python app
           command: |
@@ -84,11 +84,11 @@ jobs:
       - run:
           name: Build ec2 instance
           command: |
-            #aws cloudformation deploy \
-              #--template-file CloudFormation/cloudformation.yml \
-              #--tags project=circleci \
-              #--stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
-              #--parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation deploy \
+              --template-file CloudFormation/cloudformation.yml \
+              --tags project=circleci \
+              --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Print faild events
           when: on_fail
@@ -96,7 +96,11 @@ jobs:
             aws cloudformation describe-stack-events --stack-name Circleci-e786873
 
 workflows:
-  default:
+  Python_App:
     jobs:
-      - Build-ec2
+      - Build
+      - Test:
+          requires: [Build]
+      - Scan:
+          requires: [Test]
 
