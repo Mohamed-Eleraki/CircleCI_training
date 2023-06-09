@@ -24,3 +24,21 @@ Resources:
           cd CircleCI_training/python/
           python3 main.py
 
+          
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP traffic
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0  # Replace with your IP address or a specific CIDR block
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0  # Replace with your IP address or a specific CIDR block
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
