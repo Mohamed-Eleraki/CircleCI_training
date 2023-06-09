@@ -28,6 +28,51 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
 
 jobs: 
+  Build:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - restore_cache:
+          key: [pythonAppBuild]
+      - run:
+          name: Build python app
+          command: |
+            python --version
+            cd python
+            python main.py
+      - save_cache:
+          paths: [python/save_cache]
+          key: pythonAppBuild
+
+  Test:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - restore_cache:
+          key: [pythonAppBuild]
+      - run:
+          name: Test python app
+          command: |
+            python --version
+            cd python
+            python main_test.py
+
+  Scan:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - restore_cache:
+          key: [pythonAppBuild]
+      - run:
+          name: Scan python app
+          command: |
+            python --version
+            cd python
+            python main_scan.py
+
   Build-ec2:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
@@ -39,11 +84,11 @@ jobs:
       - run:
           name: Build ec2 instance
           command: |
-            aws cloudformation deploy \
-              --template-file CloudFormation/cloudformation.yml \
-              --tags project=circleci \
-              --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            #aws cloudformation deploy \
+              #--template-file CloudFormation/cloudformation.yml \
+              #--tags project=circleci \
+              #--stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+              #--parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Print faild events
           when: on_fail
