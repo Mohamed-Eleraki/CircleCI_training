@@ -52,35 +52,36 @@ jobs:
       - run:
           name: Test Application
           command: |
-            ls
-            curl http://127.0.0.1:5000 > ~/python_WebApp.html
-            ls
-            head ~/python_WebApp.html
+            mkdir -p workspace
+            curl http://127.0.0.1:5000 > workspace/python_WebApp.html
 
-      - run:
-          name: Scan Application
-          command: |
-            curl http://localhost:5000 > scan_python_WebApp.html 
-            head scan_python_WebApp.html
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - python_WebApp.html
 
       - save_cache:
           paths: [python/save_cache]
           key: pythonAppBuild
 
-#  Test:
-#    docker:
-#      - image: cimg/python:3.11.4
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [pythonAppBuild]
-#      - run:
-#          name: Test python app
-#          command: |
-#            python --version
-#            cd python
-#            python main_test.py
-#
+  Test:
+    docker:
+      - image: cimg/python:3.11.4
+
+    steps:
+
+      - checkout
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+      
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - run:
+          name: Test python app
+          command: cat /tmp/workspace/python_WebApp.html
+################################################################
 #  Scan:
 #    docker:
 #      - image: cimg/python:3.11.4
