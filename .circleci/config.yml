@@ -50,9 +50,9 @@ jobs:
           name: Test Application
           command: |
             ls
-            curl http://127.0.0.1:5000 > python_WebApp.html
+            curl http://127.0.0.1:5000 > ~/python_WebApp.html
             ls
-            head python_WebApp.html
+            head ~/python_WebApp.html
 
       - run:
           name: Scan Application
