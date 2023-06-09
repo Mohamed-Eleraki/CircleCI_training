@@ -96,6 +96,7 @@ jobs:
           command: |
             aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
 
+
   Build-python-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
@@ -104,11 +105,35 @@ jobs:
       - checkout  # checkout code from GitHub
       - restore_cache:
           keys: [pythonAppBuild]
-      - run: pwd
+
       - run:
-          name: Build python app
+          name: Wait for the stack to be created
           command: |
-            # ssh
+            aws cloudformation wait stack-create-complete \
+            --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - run:
+          name: Fetch the ec2 Pub IP
+          command: |
+            pwd
+            aws cloudformation describe-stacks \
+            --stack-name my-stack \
+            --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' \
+            --output text
+
+      - run:
+          name: SSH & Build python app
+          command: |
+            public_ip=$(cat text)
+            echo "$public_ip"
+
+            aws ec2 describe-key-pairs \
+            --key-name ec2_01 \
+            --query 'KeyPairs[0].KeyMaterial' \
+            --output text > ~/.ssh/	ec2_01.pem
+            chmod 400 ~/.ssh/ec2_01.pem
+
+            ssh -i ~/.ssh/ec2_01.pem ec2-user@$public_ip 'ls -la /tmp'
             # fetch python script for build
             # run
 
@@ -154,7 +179,7 @@ workflows:
           requires: [Build]
 
       - Deploy-infrastructure:
-          requires: [Build, Test, Scan]
+          requires: [Test, Scan]
 
       - Build-python-app:
           requires: [Deploy-infrastructure]
