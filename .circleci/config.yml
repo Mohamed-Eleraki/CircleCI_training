@@ -90,6 +90,14 @@ jobs:
               --tags project=circleci \
               --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+
+            aws cloudformation wait stack-create-complete \
+            --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
+
+            aws cloudformation describe-stacks \
+            --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' \
+            --output text
       - run:
           name: Print faild events
           when: on_fail
@@ -117,10 +125,10 @@ jobs:
           command: |
             aws cloudformation describe-stacks \
             --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' #\
-            #--output text
+            --query 'Stacks[0].Outputs[?OutputKey==`PublicIp`].OutputValue' \
+            --output text
             pwd
-
+            
       - run: ls -lh; cat text
 
       - run:
