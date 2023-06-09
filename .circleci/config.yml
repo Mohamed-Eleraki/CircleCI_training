@@ -73,13 +73,14 @@ jobs:
             cd python
             python main_scan.py
 
-  Build-ec2:  # Job Name
+  Deploy-infrastructure:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
-      - run: aws s3 ls  # print out s3 bucket list for test
+      - restore_cache:
+          keys: [pythonAppBuild]
       - run: pwd
       - run:
           name: Build ec2 instance
@@ -93,7 +94,55 @@ jobs:
           name: Print faild events
           when: on_fail
           command: |
-            aws cloudformation describe-stack-events --stack-name Circleci-e786873
+            aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
+
+  Build-python-app:  # Job Name
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - restore_cache:
+          keys: [pythonAppBuild]
+      - run: pwd
+      - run:
+          name: Build python app
+          command: |
+            # ssh
+            # fetch python script for build
+            # run
+
+  Test-python-app:  # Job Name
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - restore_cache:
+          keys: [pythonAppBuild]
+      - run: pwd
+      - run:
+          name: Build python app
+          command: |
+            # ssh
+            # fetch python script for test
+            # run
+
+  Scan-python-app:  # Job Name
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+      - checkout  # checkout code from GitHub
+      - restore_cache:
+          keys: [pythonAppBuild]
+      - run: pwd
+      - run:
+          name: Build python app
+          command: |
+            # ssh
+            # fetch python script for scan
+            # run
 
 workflows:
   Python_App:
@@ -102,6 +151,15 @@ workflows:
       - Test:
           requires: [Build]
       - Scan:
-          requires: [Test]
-          
+          requires: [Build]
+
+      - Deploy-infrastructure:
+          requires: [Build, Test, Scan]
+      - Build-python-app:
+          requires: [Deploy-infrastructure, Build, Test, Scan]
+      - Test-python-app:
+          requires: [Deploy-infrastructure, Build, Test, Scan]
+      - Scan-python-app:
+          requires: [Deploy-infrastructure, Build, Test, Scan]
+
 
