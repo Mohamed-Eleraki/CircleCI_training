@@ -61,6 +61,9 @@ jobs:
           paths: [python/save_cache]
           key: pythonAppBuild
 
+      - store_test_results:
+          path: Build
+
 
   Smoke-Test:
     docker:
