@@ -25,6 +25,9 @@ Resources:
           python3 main.py
 
           
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+          
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -38,4 +41,3 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0  # Replace with your IP address or a specific CIDR block
-
