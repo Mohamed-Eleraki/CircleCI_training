@@ -86,13 +86,13 @@ jobs:
             python python/main_test.py
             cat /tmp/workspace/pythonApp
 
-            if grep -q "Body" pythonapp; then
+            if grep -q "Building" pythonapp; then
               echo "Test has been run successfuly!" 
             else
               echo "failed"
             fi
       
-      #- run: mkdir test
+      - run: mkdir test
       - store_test_results:
           path: test
  
@@ -121,7 +121,7 @@ jobs:
               echo "failed"
             fi
             
-      #- run: mkdir scan
+      - run: mkdir scan
       - store_test_results:
           path: scan
 
