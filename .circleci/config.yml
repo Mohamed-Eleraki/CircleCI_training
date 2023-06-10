@@ -84,7 +84,7 @@ jobs:
             echo "test has been run successfuly!"
       
       - store_test_results:
-          path: /
+          path: ./test
  
 
   Scan:
@@ -105,7 +105,7 @@ jobs:
             python python/main_scan.py
 
       - store_test_results:
-          path: /
+          path: ./scan
 
   Deploy:  # Job Name
     docker:
