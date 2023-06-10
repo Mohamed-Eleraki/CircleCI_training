@@ -44,10 +44,12 @@ jobs:
       - run:
           name: Build python app
           command: |
-            cd python
-            python main.py --host 0.0.0.0 --port 5000
+            #cd python
+            #python main.py --host 0.0.0.0 --port 5000
             #python main.py
-            #nohup python3 main.py > output.log &
+            #nohup python3 python/main.py > output.log &
+
+            nohup sh -c 'cd /python/main.py && source venv/bin/activate && gunicorn wsgi:app -b localhost:5000' &
       
       - run:
           name: Test Application
