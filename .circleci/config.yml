@@ -37,23 +37,23 @@ jobs:
           keys: [pythonAppBuild]
           
       - run:
-          name: install prerequisits
+          name: install dependencies
           command: |
-            python --version
             pip install flask
             
       - run:
           name: Build python app
           command: |
             cd python
+            python main.py --host 0.0.0.0 --port 5000
             #python main.py
-            nohup python3 main.py > output.log &
+            #nohup python3 main.py > output.log &
       
       - run:
           name: Test Application
           command: |
             mkdir -p workspace
-            curl http://127.0.0.1:5000 > workspace/python_WebApp.html
+            curl http://localhost:5000 > workspace/python_WebApp.html
 
       - persist_to_workspace:
           root: workspace
@@ -206,7 +206,7 @@ workflows:
   Python_App:
     jobs:
       - Build
-      #- Test:
+      - Test
       #    requires: [Build]
       #- Scan:
       #    requires: [Build]
