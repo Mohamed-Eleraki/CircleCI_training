@@ -41,25 +41,21 @@ jobs:
           
       - run:
           name: install dependencies
-          command: pip install flask #pip install -r requirements.txt
+          command: |
+            #pip install -r requirements.txt
             
       - run:
           name: Build python app
           command: |
+            mkdir workspace
             cd python
-            &python main.py
-            #nohup python3 python/main.py > output.log &
+            python main.py > workspace/pythonApp
 
-      - run:
-          name: Test python Application
-          command: |
-            mkdir -p workspace
-            curl http://localhost:8080 > workspace/python_WebApp.html
 
       - persist_to_workspace:
           root: workspace
           paths:
-            - python_WebApp.html
+            - pythonApp
 
       - save_cache:
           paths: [python/save_cache]
@@ -81,21 +77,27 @@ jobs:
 
       - run:
           name: Test python app
-          command: cat /tmp/workspace/python_WebApp.html
-################################################################
-#  Scan:
-#    docker:
-#      - image: cimg/python:3.11.4
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [pythonAppBuild]
-#      - run:
-#          name: Scan python app
-#          command: |
-#            python --version
-#            cd python
-#            python main_scan.py
+          command: |
+            cat /tmp/workspace/pythonApp
+            echo "test has been run successfuly!"
+
+  Scan:
+    docker:
+      - image: cimg/aws:2023.06
+
+    steps:
+
+      - checkout
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+
+      - run:
+          name: Scan python app
+          command: |
+            python --version
+            cd python
+            python main_scan.py
 
   Deploy-infrastructure:  # Job Name
     docker:
@@ -209,8 +211,8 @@ workflows:
       - Build
       - Test:
           requires: [Build]
-      #- Scan:
-      #    requires: [Build]
+      - Scan:
+          requires: [Build]
 #
       #- Deploy-infrastructure:
       #    requires: [Test, Scan]
