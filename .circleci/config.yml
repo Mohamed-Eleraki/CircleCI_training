@@ -206,8 +206,8 @@ workflows:
   Python_App:
     jobs:
       - Build
-      - Test
-      #    requires: [Build]
+      - Test:
+          requires: [Build]
       #- Scan:
       #    requires: [Build]
 #
