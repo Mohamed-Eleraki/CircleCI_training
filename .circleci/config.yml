@@ -184,5 +184,8 @@ workflows:
 
       - Deploy:
           requires: [Smoke-Test, Scan]
+      
+      - Test:
+          requires: [Deploy]
 
 
