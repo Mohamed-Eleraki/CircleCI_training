@@ -83,6 +83,7 @@ jobs:
             python python/main_test.py
             echo "test has been run successfuly!"
       
+      - run: mkdir test
       - store_test_results:
           path: test
  
@@ -103,7 +104,8 @@ jobs:
           command: |
             python --version
             python python/main_scan.py
-
+            
+      - run: mkdir scan
       - store_test_results:
           path: scan
 
