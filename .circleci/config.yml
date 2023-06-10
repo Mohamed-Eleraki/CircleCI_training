@@ -29,81 +29,86 @@ commands:
 
 jobs: 
   Build:
+
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/aws:2023.06
+
     steps:
       - checkout
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
           
       - run:
           name: install dependencies
           command: |
-            pip install flask
-            pip install gunicorn
+            sudo apt-get update
+            sudo apt-get install apache2
+            sudo systemctl start apache2
+            sudo systemctl status apache2
+            sudo systemctl enable apache2
             
       - run:
-          name: Build python app
+          name: Build httpd app
           command: |
-            #cd python
-            #python main.py --host 0.0.0.0 --port 8000
-            #python main.py
-            #nohup python3 python/main.py > output.log &
-            #nohup sh -c 'cd /python/main.py && source venv/bin/activate && gunicorn wsgi:app -b localhost:8000' &
+            #cd httpd
+            #httpd main.py --host 0.0.0.0 --port 8000
+            #httpd main.py
+            #nohup httpd3 httpd/main.py > output.log &
+            #nohup sh -c 'cd /httpd/main.py && source venv/bin/activate && gunicorn wsgi:app -b localhost:8000' &
 
-            cd python
+            #cd httpd
             #source venv/bin/activate
             #gunicorn wsgi:app -c gunicorn_config.py
             #nohup sh -c 'cd /path/to/flask/app && source venv/bin/activate && gunicorn wsgi:app -c gunicorn_config.py' &
-            nohup sh -c 'cd python && gunicorn wsgi:app -c gunicorn_config.py' &
+            #nohup sh -c 'cd httpd && gunicorn wsgi:app -c gunicorn_config.py' &
 
 
       - run:
-          name: Test Application
+          name: Test httpd Application
           command: |
             mkdir -p workspace
-            curl http://localhost:8000 > workspace/python_WebApp.html
+            curl http://localhost:80 > workspace/httpd_WebApp.html
 
       - persist_to_workspace:
           root: workspace
           paths:
-            - python_WebApp.html
+            - httpd_WebApp.html
 
       - save_cache:
-          paths: [python/save_cache]
-          key: pythonAppBuild
+          paths: [httpd/save_cache]
+          key: httpdAppBuild
 
   Test:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/aws:2023.06
 
     steps:
 
       - checkout
 
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
       
       - attach_workspace:
           at: /tmp/workspace
 
       - run:
-          name: Test python app
-          command: cat /tmp/workspace/python_WebApp.html
+          name: Test httpd app
+          command: cat /tmp/workspace/httpd_WebApp.html
 ################################################################
 #  Scan:
 #    docker:
-#      - image: cimg/python:3.11.4
+#      - image: cimg/httpd:3.11.4
 #    steps:
 #      - checkout
 #      - restore_cache:
-#          keys: [pythonAppBuild]
+#          keys: [httpdAppBuild]
 #      - run:
-#          name: Scan python app
+#          name: Scan httpd app
 #          command: |
-#            python --version
-#            cd python
-#            python main_scan.py
+#            httpd --version
+#            cd httpd
+#            httpd main_scan.py
 
   Deploy-infrastructure:  # Job Name
     docker:
@@ -112,7 +117,7 @@ jobs:
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
       - run: pwd
       - run:
           name: Build ec2 instance
@@ -137,14 +142,14 @@ jobs:
             aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
 
 
-  Build-python-app:  # Job Name
+  Build-httpd-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
 
       - run:
           name: Wait for the stack to be created
@@ -164,7 +169,7 @@ jobs:
       - run: ls -lh; cat text
 
       - run:
-          name: SSH & Build python app
+          name: SSH & Build httpd app
           command: |
             public_ip=$(cat text)
             echo "$public_ip"
@@ -176,43 +181,43 @@ jobs:
             chmod 400 ~/.ssh/ec2_01.pem
 
             ssh -i ~/.ssh/ec2_01.pem ec2-user@$public_ip 'ls -la /tmp'
-            # fetch python script for build
+            # fetch httpd script for build
             # run
 
-  Test-python-app:  # Job Name
+  Test-httpd-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
       - run: pwd
       - run:
-          name: Build python app
+          name: Build httpd app
           command: |
             # ssh
-            # fetch python script for test
+            # fetch httpd script for test
             # run
 
-  Scan-python-app:  # Job Name
+  Scan-httpd-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [pythonAppBuild]
+          keys: [httpdAppBuild]
       - run: pwd
       - run:
-          name: Build python app
+          name: Build httpd app
           command: |
             # ssh
-            # fetch python script for scan
+            # fetch httpd script for scan
             # run
 
 workflows:
-  Python_App:
+  httpd_App:
     jobs:
       - Build
       - Test:
@@ -223,11 +228,11 @@ workflows:
       #- Deploy-infrastructure:
       #    requires: [Test, Scan]
 #
-      #- Build-python-app:
+      #- Build-httpd-app:
       #    requires: [Deploy-infrastructure]
-      #- Test-python-app:
-      #    requires: [Build-python-app]
-      #- Scan-python-app:
-      #    requires: [Build-python-app]
+      #- Test-httpd-app:
+      #    requires: [Build-httpd-app]
+      #- Scan-httpd-app:
+      #    requires: [Build-httpd-app]
 
 
