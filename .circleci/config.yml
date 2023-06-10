@@ -31,49 +31,39 @@ jobs:
   Build:
 
     docker:
-      - image: cimg/aws:2023.06
+      - image: cimg/python:3.11.4
 
     steps:
       - checkout
+
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
           
       - run:
           name: install dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install nginx
+          command: pip install flask #pip install -r requirements.txt
             
       - run:
-          name: Build httpd app
+          name: Build python app
           command: |
-            #cd httpd
-            #httpd main.py --host 0.0.0.0 --port 8000
-            #httpd main.py
-            #nohup httpd3 httpd/main.py > output.log &
-            #nohup sh -c 'cd /httpd/main.py && source venv/bin/activate && gunicorn wsgi:app -b localhost:8000' &
-
-            #cd httpd
-            #source venv/bin/activate
-            #gunicorn wsgi:app -c gunicorn_config.py
-            #nohup sh -c 'cd /path/to/flask/app && source venv/bin/activate && gunicorn wsgi:app -c gunicorn_config.py' &
-            #nohup sh -c 'cd httpd && gunicorn wsgi:app -c gunicorn_config.py' &
-
+            cd python
+            &python main.py
+            #nohup python3 python/main.py > output.log &
 
       - run:
-          name: Test httpd Application
+          name: Test python Application
           command: |
             mkdir -p workspace
-            curl http://localhost:8080 > workspace/httpd_WebApp.html
+            curl http://localhost:8080 > workspace/python_WebApp.html
 
       - persist_to_workspace:
           root: workspace
           paths:
-            - httpd_WebApp.html
+            - python_WebApp.html
 
       - save_cache:
-          paths: [httpd/save_cache]
-          key: httpdAppBuild
+          paths: [python/save_cache]
+          key: pythonAppBuild
 
   Test:
     docker:
@@ -84,28 +74,28 @@ jobs:
       - checkout
 
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
       
       - attach_workspace:
           at: /tmp/workspace
 
       - run:
-          name: Test httpd app
-          command: cat /tmp/workspace/httpd_WebApp.html
+          name: Test python app
+          command: cat /tmp/workspace/python_WebApp.html
 ################################################################
 #  Scan:
 #    docker:
-#      - image: cimg/httpd:3.11.4
+#      - image: cimg/python:3.11.4
 #    steps:
 #      - checkout
 #      - restore_cache:
-#          keys: [httpdAppBuild]
+#          keys: [pythonAppBuild]
 #      - run:
-#          name: Scan httpd app
+#          name: Scan python app
 #          command: |
-#            httpd --version
-#            cd httpd
-#            httpd main_scan.py
+#            python --version
+#            cd python
+#            python main_scan.py
 
   Deploy-infrastructure:  # Job Name
     docker:
@@ -114,7 +104,7 @@ jobs:
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
       - run: pwd
       - run:
           name: Build ec2 instance
@@ -139,14 +129,14 @@ jobs:
             aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
 
 
-  Build-httpd-app:  # Job Name
+  Build-python-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
 
       - run:
           name: Wait for the stack to be created
@@ -166,7 +156,7 @@ jobs:
       - run: ls -lh; cat text
 
       - run:
-          name: SSH & Build httpd app
+          name: SSH & Build python app
           command: |
             public_ip=$(cat text)
             echo "$public_ip"
@@ -178,43 +168,43 @@ jobs:
             chmod 400 ~/.ssh/ec2_01.pem
 
             ssh -i ~/.ssh/ec2_01.pem ec2-user@$public_ip 'ls -la /tmp'
-            # fetch httpd script for build
+            # fetch python script for build
             # run
 
-  Test-httpd-app:  # Job Name
+  Test-python-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
       - run: pwd
       - run:
-          name: Build httpd app
+          name: Build python app
           command: |
             # ssh
-            # fetch httpd script for test
+            # fetch python script for test
             # run
 
-  Scan-httpd-app:  # Job Name
+  Scan-python-app:  # Job Name
     docker:
       - image: cimg/aws:2023.05  # Spcecify The AWS image.
 
     steps:  # Job Steps
       - checkout  # checkout code from GitHub
       - restore_cache:
-          keys: [httpdAppBuild]
+          keys: [pythonAppBuild]
       - run: pwd
       - run:
-          name: Build httpd app
+          name: Build python app
           command: |
             # ssh
-            # fetch httpd script for scan
+            # fetch python script for scan
             # run
 
 workflows:
-  httpd_App:
+  python_App:
     jobs:
       - Build
       - Test:
@@ -225,11 +215,11 @@ workflows:
       #- Deploy-infrastructure:
       #    requires: [Test, Scan]
 #
-      #- Build-httpd-app:
+      #- Build-python-app:
       #    requires: [Deploy-infrastructure]
-      #- Test-httpd-app:
-      #    requires: [Build-httpd-app]
-      #- Scan-httpd-app:
-      #    requires: [Build-httpd-app]
+      #- Test-python-app:
+      #    requires: [Build-python-app]
+      #- Scan-python-app:
+      #    requires: [Build-python-app]
 
 
