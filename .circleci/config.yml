@@ -63,7 +63,7 @@ jobs:
 
   Test:
     docker:
-      - image: cimg/aws:2023.06
+      - image: cimg/python:3.11.4
 
     steps:
 
@@ -79,11 +79,12 @@ jobs:
           name: Test python app
           command: |
             cat /tmp/workspace/pythonApp
+            python python/main_test.py
             echo "test has been run successfuly!"
 
   Scan:
     docker:
-      - image: cimg/aws:2023.06
+      - image: cimg/python:3.11.4
 
     steps:
 
@@ -96,8 +97,7 @@ jobs:
           name: Scan python app
           command: |
             python --version
-            cd python
-            python main_scan.py
+            python python/main_scan.py
 
   Deploy-infrastructure:  # Job Name
     docker:
