@@ -86,7 +86,7 @@ jobs:
             python python/main_test.py
             cat /tmp/workspace/pythonApp
 
-            if grep -q "Building" pythonapp; then
+            if grep -q "Hello, Building python app....." pythonapp; then
               echo "Test has been run successfuly!" 
             else
               echo "failed"
@@ -115,7 +115,7 @@ jobs:
             python python/main_scan.py > scan
 
             cat scan
-            if grep -q "scan" scan; then
+            if grep -q "Scan python app....." scan; then
               echo "Scan has been run successfuly!" 
             else
               echo "failed"
