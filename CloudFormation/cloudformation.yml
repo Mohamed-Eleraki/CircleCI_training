@@ -38,7 +38,4 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0  # Replace with your IP address or a specific CIDR block
-        - IpProtocol: tcp
-          FromPort: 0
-          ToPort: 0
-          CidrIp: 0.0.0.0/0
+
