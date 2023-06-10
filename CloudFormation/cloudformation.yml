@@ -26,7 +26,10 @@ Resources:
           cd CircleCI_training/python/
           python3 main.py > output.file
 
-          
+      Tags:
+        - Key: Name
+          Value: ec2_server
+              
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
           
