@@ -61,6 +61,7 @@ jobs:
           paths: [python/save_cache]
           key: pythonAppBuild
 
+
   Smoke-Test:
     docker:
       - image: cimg/python:3.11.4
@@ -81,6 +82,10 @@ jobs:
             cat /tmp/workspace/pythonApp
             python python/main_test.py
             echo "test has been run successfuly!"
+      
+      - store_test_results:
+          path: ~/test/Smoke-Test
+ 
 
   Scan:
     docker:
@@ -98,6 +103,9 @@ jobs:
           command: |
             python --version
             python python/main_scan.py
+
+      - store_test_results:
+          path: ~/test/Scan
 
   Deploy:  # Job Name
     docker:
@@ -180,10 +188,10 @@ workflows:
       - Scan:
           requires: [Build]
 
-      - Deploy:
-          requires: [Smoke-Test, Scan]
-      
-      - Test:
-          requires: [Deploy]
+      #- Deploy:
+      #    requires: [Smoke-Test, Scan]
+      #
+      #- Test:
+      #    requires: [Deploy]
 
 
