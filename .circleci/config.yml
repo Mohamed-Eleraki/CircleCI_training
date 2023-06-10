@@ -49,6 +49,7 @@ jobs:
           command: |
             mkdir workspace
             python python/main.py > workspace/pythonApp
+            echo run
 
 
       - persist_to_workspace:
