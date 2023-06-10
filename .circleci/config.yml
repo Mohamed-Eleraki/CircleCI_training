@@ -51,7 +51,7 @@ jobs:
             #nohup python3 python/main.py > output.log &
             #nohup sh -c 'cd /python/main.py && source venv/bin/activate && gunicorn wsgi:app -b localhost:8000' &
 
-            cd /python
+            cd python
             source venv/bin/activate
             gunicorn wsgi:app -c gunicorn_config.py
             #nohup sh -c 'cd /path/to/flask/app && source venv/bin/activate && gunicorn wsgi:app -c gunicorn_config.py' &
