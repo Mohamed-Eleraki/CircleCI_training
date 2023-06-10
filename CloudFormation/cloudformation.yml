@@ -24,7 +24,7 @@ Resources:
           cd /temp
           git clone https://github.com/Mohamed-Eleraki/CircleCI_training.git
           cd CircleCI_training/python/
-          python3 main.py
+          python3 main.py > output.file
 
           
       SecurityGroupIds:
