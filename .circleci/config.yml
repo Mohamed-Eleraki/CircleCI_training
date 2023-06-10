@@ -61,7 +61,7 @@ jobs:
           paths: [python/save_cache]
           key: pythonAppBuild
 
-  Test:
+  Smoke-Test:
     docker:
       - image: cimg/python:3.11.4
 
@@ -127,17 +127,62 @@ jobs:
             aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
 
       - destroy-environment
+  
+  Test:
+
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+
+      - checkout  # checkout code from GitHub
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+
+      #- add_ssh_keys:
+      #    fingerprints: ["af:73:6d:82:24:e8:dc:d8:da:78:a2:ec:10:db:94:b6:27:33:30:8e"]
+
+      - run:
+          name: generete-fingerPrint
+          command: |
+            ssh-keygen -E md5 -lf ~/.ssh/id_rsa.pub | awk '{print $2}
+
+            aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2_server" \
+            --query 'Reservations[*].Instances[*].[InstanceId,PublicIpAddress,State.Name,InstanceType,KeyName,LaunchTime]' \
+            > /InstanceID.output
+
+            cat /InstanceID.output
+            InstanceID=$(cat /InstanceID.output)
+            $InstanceID
+
+            aws ec2-instance-connect send-ssh-public-key \
+            --instance-id $InstanceID --instance-os-user ec2-user \
+            --availability-zone us-east-1 --ssh-public-key file://~/.ssh/id_rsa.pub
+
+      - run:
+          name: SSH into EC2 instance
+          command: |
+            aws ec2 describe-instances --filters "Name=tag:Name,Values=Name" \
+            "Name=tag-value,Values=ec2_server" --query 'Reservations[*].Instances[*].PublicIpAddress' --output /text
+
+            cat /text
+            InstanceIP=$(cat /text)
+            $InstanceIP
+
+            ssh -o "StrictHostKeyChecking=no" -i ~/.ssh/id_rsa ec2-user@$InstanceIP \
+            -o "FingerprintHash=md5" -o "UserKnownHostsFile=/dev/null"
 
 workflows:
   python_App:
     jobs:
       - Build
-      - Test:
+      - Smoke-Test:
           requires: [Build]
       - Scan:
           requires: [Build]
 
       - Deploy:
-          requires: [Test, Scan]
+          requires: [Smoke-Test, Scan]
 
 
