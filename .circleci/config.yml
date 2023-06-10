@@ -53,9 +53,9 @@ jobs:
 
             cd python
             #source venv/bin/activate
-            gunicorn wsgi:app -c gunicorn_config.py
+            #gunicorn wsgi:app -c gunicorn_config.py
             #nohup sh -c 'cd /path/to/flask/app && source venv/bin/activate && gunicorn wsgi:app -c gunicorn_config.py' &
-
+            nohup sh -c 'cd python && gunicorn wsgi:app -c gunicorn_config.py' &
 
 
       - run:
