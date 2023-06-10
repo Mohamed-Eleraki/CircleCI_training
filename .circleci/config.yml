@@ -61,6 +61,7 @@ jobs:
           paths: [python/save_cache]
           key: pythonAppBuild
 
+      - run: mkdir Build
       - store_test_results:
           path: Build
 
