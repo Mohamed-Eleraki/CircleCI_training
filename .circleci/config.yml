@@ -48,8 +48,7 @@ jobs:
           name: Build python app
           command: |
             mkdir workspace
-            cd python
-            python main.py > workspace/pythonApp
+            python python/main.py > workspace/pythonApp
 
 
       - persist_to_workspace:
