@@ -20,6 +20,8 @@ Resources:
           #!/bin/bash
           yum update -y
           yum install -y python3
+          mkdir /temp
+          cd /temp
           git clone https://github.com/Mohamed-Eleraki/CircleCI_training.git
           cd CircleCI_training/python/
           python3 main.py
