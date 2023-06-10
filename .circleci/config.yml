@@ -148,9 +148,7 @@ jobs:
           command: |
             ssh-keygen -E md5 -lf ~/.ssh/id_rsa.pub | awk '{print $2}
 
-            aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2_server" \
-            --query 'Reservations[*].Instances[*].[InstanceId,PublicIpAddress,State.Name,InstanceType,KeyName,LaunchTime]' \
-            > /InstanceID.output
+            aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2_server" --query 'Reservations[*].Instances[*].[InstanceId,PublicIpAddress,State.Name,InstanceType,KeyName,LaunchTime]' > /InstanceID.output
 
             cat /InstanceID.output
             InstanceID=$(cat /InstanceID.output)
