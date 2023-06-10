@@ -88,7 +88,7 @@ jobs:
               echo "failed"
             fi
       
-      - run: mkdir test
+      #- run: mkdir test
       - store_test_results:
           path: test
  
@@ -117,7 +117,7 @@ jobs:
               echo "failed"
             fi
             
-      - run: mkdir scan
+      #- run: mkdir scan
       - store_test_results:
           path: scan
 
