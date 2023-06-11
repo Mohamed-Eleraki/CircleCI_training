@@ -106,7 +106,7 @@ jobs:
           command: |
             pip install requests
             #pip install twine && twine upload dist/*
-            pip install twine && twine
+            #pip install twine && twine
       - run:
           name: Run tests
           command: python -m unittest discover
