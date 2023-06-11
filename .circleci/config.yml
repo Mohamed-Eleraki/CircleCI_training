@@ -45,15 +45,13 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            #pip install -r requirements.txt
+            pip install requests
             
       - run:
           name: Build python app
           command: |
             mkdir workspace
-            python python/main.py > workspace/pythonApp
-            echo run
-
+            python python/main.py > pythonApp
 
       - persist_to_workspace:
           root: workspace
@@ -64,9 +62,9 @@ jobs:
           paths: [python/save_cache]
           key: pythonAppBuild
 
-      - run: mkdir Build
+      - run: mkdir store_test_results_Buildfile
       - store_test_results:
-          path: Build
+          path: store_test_results_Buildfile
 
 
   Smoke-Test-temp:
@@ -102,11 +100,12 @@ jobs:
   Smoke-Test:
     executor: python/default
     steps:
-      #- checkout
-      #- python/dist
-      #- run: pip install twine && twine upload dist/*
       - checkout
-      #- python/install-deps
+      - run:
+          name: install dependencies
+          command: |
+            pip install requests
+            pip install twine && twine upload dist/*
       - run:
           name: Run tests
           command: python -m unittest discover
@@ -135,9 +134,9 @@ jobs:
               echo "failed"
             fi
             
-      - run: mkdir scan
+      - run: mkdir store_test_results_Scanfile
       - store_test_results:
-          path: scan
+          path: store_test_results_Scanfile
 
   Deploy:  # Job Name
     docker:
