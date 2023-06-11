@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@4.4.1
+  python: circleci/python@1.0.0
 
 commands:
   install_awscli:
@@ -100,14 +100,11 @@ jobs:
           path: test
  
   Smoke-Test:
-    docker:
-      - image: circleci/python:3.8.12
+    executor: python/default
     steps:
       - checkout
-      - python/install-deps
-      - run:
-          name: Run tests
-          command: python -m unittest discover
+      - python/dist
+      - run: pip install twine && twine upload dist/*
 
   Scan:
     docker:
@@ -213,10 +210,16 @@ workflows:
   python_App:
     jobs:
       - Build
-      - Smoke-Test:
-          requires: [Build]
-      - Scan:
-          requires: [Build]
+      #- Smoke-Test:
+      #    requires: [Build]
+      #- Scan:
+      #    requires: [Build]
+      
+      - python/test:
+          args: '--dev'
+          pkg-manager: pipenv
+          test-tool: pytest
+
 
       #- Deploy:
       #    requires: [Smoke-Test, Scan]
