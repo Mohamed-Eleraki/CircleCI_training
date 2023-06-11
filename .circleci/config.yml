@@ -51,7 +51,7 @@ jobs:
           name: Build python app
           command: |
             mkdir workspace
-            python python/main.py > pythonApp
+            python python/main.py > workspace/pythonApp
 
       - persist_to_workspace:
           root: workspace
