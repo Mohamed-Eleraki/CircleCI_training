@@ -1,6 +1,9 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 version: 2.1
 
+orbs:
+  python: circleci/python@x.y
+
 commands:
   install_awscli:
     description: Install AWS CLI v2
@@ -66,7 +69,7 @@ jobs:
           path: Build
 
 
-  Smoke-Test:
+  Smoke-Test-temp:
     docker:
       - image: cimg/python:3.11.4
 
@@ -96,6 +99,14 @@ jobs:
       - store_test_results:
           path: test
  
+  Smoke-Test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/install-packages
+      - run:
+          name: Run tests
+          command: pytest
 
   Scan:
     docker:
