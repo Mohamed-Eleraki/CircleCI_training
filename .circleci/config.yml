@@ -105,7 +105,8 @@ jobs:
           name: install dependencies
           command: |
             pip install requests
-            pip install twine && twine upload dist/*
+            #pip install twine && twine upload dist/*
+            pip install twine && twine
       - run:
           name: Run tests
           command: python -m unittest discover
@@ -120,6 +121,11 @@ jobs:
 
       - restore_cache:
           keys: [pythonAppBuild]
+
+      - run:
+          name: install dependencies
+          command: |
+            pip install requests
 
       - run:
           name: Scan python app
