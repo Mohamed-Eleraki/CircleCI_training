@@ -143,7 +143,7 @@ jobs:
           name: copy test result for storing
           command: |
             mkdir test-results
-            cp test-result.xml test-results/
+            cp test-results.xml test-results/
 
       - store_test_results:
           path: test-results
