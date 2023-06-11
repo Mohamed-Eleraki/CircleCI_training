@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@x.y
+  python: circleci/python@3.0.0
 
 commands:
   install_awscli:
