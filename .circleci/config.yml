@@ -102,9 +102,14 @@ jobs:
   Smoke-Test:
     executor: python/default
     steps:
+      #- checkout
+      #- python/dist
+      #- run: pip install twine && twine upload dist/*
       - checkout
-      - python/dist
-      - run: pip install twine && twine upload dist/*
+      - python/install-deps
+      - run:
+          name: Run tests
+          command: python -m unittest discover
 
   Scan:
     docker:
@@ -210,15 +215,15 @@ workflows:
   python_App:
     jobs:
       - Build
-      #- Smoke-Test:
-      #    requires: [Build]
-      #- Scan:
-      #    requires: [Build]
+      - Smoke-Test:
+          requires: [Build]
+      - Scan:
+          requires: [Build]
       
-      - python/test:
-          args: '--dev'
-          pkg-manager: pipenv
-          test-tool: pytest
+      #- python/test:
+      #    args: '--dev'
+      #    pkg-manager: pipenv
+      #    test-tool: pytest
 
 
       #- Deploy:
