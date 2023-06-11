@@ -139,10 +139,14 @@ jobs:
             else
               echo "failed"
             fi
-            
-      - run: mkdir store_test_results_Scanfile
+      - run:      
+          name: copy test result for storing
+          command: |
+            mkdir test-results
+            cp test-result.xml test-results/
+
       - store_test_results:
-          path: store_test_results_Scanfile
+          path: test-results
 
   Deploy:  # Job Name
     docker:
