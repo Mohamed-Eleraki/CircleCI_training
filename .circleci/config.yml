@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@3.0.0
+  python: circleci/python@4.4.1
 
 commands:
   install_awscli:
@@ -100,13 +100,14 @@ jobs:
           path: test
  
   Smoke-Test:
-    executor: python/default
+    docker:
+      - image: circleci/python:3.8.12
     steps:
       - checkout
-      - python/install-packages
+      - python/install-deps
       - run:
           name: Run tests
-          command: pytest
+          command: python -m unittest discover
 
   Scan:
     docker:
