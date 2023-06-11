@@ -106,7 +106,7 @@ jobs:
       #- python/dist
       #- run: pip install twine && twine upload dist/*
       - checkout
-      - python/install-deps
+      #- python/install-deps
       - run:
           name: Run tests
           command: python -m unittest discover
