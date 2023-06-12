@@ -14,11 +14,12 @@ jobs:
     steps:
       - checkout
       #- run: pip install -r python/requirements.txt
-      - python/install-packages:
-          packages: flask, requests
+      - python/install-packages
+          #packages: flask, requests
+
 
       - run: python python/main.py
-     
+
 
 workflows:
   python_App:
