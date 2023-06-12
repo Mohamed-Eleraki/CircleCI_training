@@ -10,9 +10,16 @@ jobs:
 
     steps:
       - checkout
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+          
       - run: pip install -r python/requirements.txt
       - run: python python/main.py
 
+      - save_cache:
+          paths: [python/save_cache]
+          key: pythonAppBuild
 workflows:
   python_App:
     jobs:
