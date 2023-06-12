@@ -12,14 +12,15 @@ jobs:
       - checkout
 
       - restore_cache:
-          keys: [pythonAppBuild]
-          
+          keys: v1-deps-{{ checksum "package-lock.json" }} 
+
       - run: pip install -r python/requirements.txt
       - run: python python/main.py
 
       - save_cache:
-          paths: [python/save_cache]
-          key: pythonAppBuild
+          key: v1-deps-{{ checksum "package-lock.json" }} 
+          paths:
+            - python_app
 workflows:
   python_App:
     jobs:
