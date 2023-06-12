@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - checkout
-      - run: pip install flask
+      - run: pip install -r requirements.txt
       - run: python python/main.py
      
 
