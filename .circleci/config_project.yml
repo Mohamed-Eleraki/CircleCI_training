@@ -1,0 +1,249 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+version: 2.1
+
+orbs:
+  python: circleci/python@1.0.0
+  #sonarcloud: sonarsource/sonarcloud@1.1.0
+  #snyk: snyk/snyk@1.4.0
+
+commands:
+  install_awscli:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>
+            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
+
+jobs: 
+  Build:
+
+    docker:
+      - image: cimg/python:3.11.4
+    resource_class: small
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+          
+      - run:
+          name: install dependencies
+          command: |
+            pip install requests
+            
+      - run:
+          name: Build python app
+          command: |
+            mkdir workspace
+            python python/main.py > workspace/pythonApp
+
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - pythonApp
+
+      - save_cache:
+          paths: [python/save_cache]
+          key: pythonAppBuild
+
+      - run: mkdir store_test_results_Buildfile
+      - store_test_results:
+          path: store_test_results_Buildfile
+
+
+  Smoke-Test-temp:
+    docker:
+      - image: cimg/python:3.11.4
+
+    steps:
+
+      - checkout
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+      
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - run:
+          name: Test python app
+          command: |
+            python python/main_test.py
+            cat /tmp/workspace/pythonApp
+
+            if grep -q "Hello" /tmp/workspace/pythonApp; then
+              echo "Test has been run successfuly!" 
+            else
+              echo "failed"
+            fi
+      
+      - run: mkdir test
+      - store_test_results:
+          path: test
+ 
+  Smoke-Test:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            pip install requests
+            #pip install twine && twine upload dist/*
+            #pip install twine && twine
+      - run:
+          name: Run tests
+          command: python -m unittest discover
+
+  Scan:
+    docker:
+      - image: cimg/python:3.11.4
+
+    steps:
+
+      - checkout
+      #- sonarcloud/scan
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+
+      - run:
+          name: install dependencies
+          command: |
+            pip install requests
+
+      - run:
+          name: Scan python app
+          command: |
+            python --version
+            python python/main_scan.py > scan
+
+            cat scan
+            if grep -q "Scan python app....." scan; then
+              echo "Scan has been run successfuly!" 
+            else
+              echo "failed"
+            fi
+      - run:      
+          name: copy test result for storing
+          command: |
+            mkdir test-results
+            cp test-results.xml test-results/
+
+      - store_test_results:
+          path: test-results
+
+  Deploy:  # Job Name
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+
+      - checkout  # checkout code from GitHub
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+
+      - run: pwd
+      - run:
+          name: Build ec2 instance
+          command: |
+            aws cloudformation deploy \
+              --template-file CloudFormation/cloudformation.yml \
+              --tags project=circleci \
+              --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - run:
+          name: Print faild events
+          when: on_fail
+          command: |
+            aws cloudformation describe-stack-events --stack-name "Circleci-${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - destroy-environment
+  
+  Test:
+
+    docker:
+      - image: cimg/aws:2023.05  # Spcecify The AWS image.
+
+    steps:  # Job Steps
+
+      - checkout  # checkout code from GitHub
+
+      - restore_cache:
+          keys: [pythonAppBuild]
+
+      #- add_ssh_keys:
+      #    fingerprints: ["af:73:6d:82:24:e8:dc:d8:da:78:a2:ec:10:db:94:b6:27:33:30:8e"]
+
+      - run:
+          name: generete-fingerPrint
+          command: |
+            ssh-keygen -E md5 -lf ~/.ssh/id_rsa.pub | awk '{print $2}
+
+            aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2_server" --query 'Reservations[*].Instances[*].[InstanceId,PublicIpAddress,State.Name,InstanceType,KeyName,LaunchTime]' > /InstanceID.output
+
+            cat /InstanceID.output
+            InstanceID=$(cat /InstanceID.output)
+            $InstanceID
+
+            aws ec2-instance-connect send-ssh-public-key \
+            --instance-id $InstanceID --instance-os-user ec2-user \
+            --availability-zone us-east-1 --ssh-public-key file://~/.ssh/id_rsa.pub
+
+      - run:
+          name: SSH into EC2 instance
+          command: |
+            aws ec2 describe-instances --filters "Name=tag:Name,Values=Name" \
+            "Name=tag-value,Values=ec2_server" --query 'Reservations[*].Instances[*].PublicIpAddress' --output /text
+
+            cat /text
+            InstanceIP=$(cat /text)
+            $InstanceIP
+
+            ssh -o "StrictHostKeyChecking=no" -i ~/.ssh/id_rsa ec2-user@$InstanceIP \
+            -o "FingerprintHash=md5" -o "UserKnownHostsFile=/dev/null"
+
+workflows:
+  python_App:
+    jobs:
+      - Build
+      - Smoke-Test:
+          requires: [Build]
+      - Scan:
+          requires: [Build]
+          context: sonarcloud
+      
+      #- python/test:
+      #    args: '--dev'
+      #    pkg-manager: pipenv
+      #    test-tool: pytest
+
+
+      #- Deploy:
+      #    requires: [Smoke-Test, Scan]
+      #
+      #- Test:
+      #    requires: [Deploy]
+
+
