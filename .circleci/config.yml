@@ -15,8 +15,8 @@ jobs:
       - checkout
       #- run: pip install -r python/requirements.txt
       - python/install-packages:
-          - flask
-          #packages: flask, requests
+          pkg-manager: pip
+          app-dir: python/  # If your requirements.txt isn't in the root directory.
 
 
       - run: python python/main.py
