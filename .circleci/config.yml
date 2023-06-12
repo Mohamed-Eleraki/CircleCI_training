@@ -15,9 +15,8 @@ jobs:
       - checkout
       #- run: pip install -r python/requirements.txt
       - python/install-packages:
-          #packages: flask, requests
           path: python/requirements.txt
-          
+
       - run: python python/main.py
      
 
