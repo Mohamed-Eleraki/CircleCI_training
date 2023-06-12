@@ -5,13 +5,13 @@ jobs:
   Build:
 
     docker:
-      - image: cimg/node:16.16.0
+      - image: cimg/python:3.11.4
     resource_class: small
 
     steps:
       - checkout
-      - run: npm install
-     
+      - run: pip install python/requirements.txt
+      - run: python python/main.py
 
 workflows:
   python_App:
