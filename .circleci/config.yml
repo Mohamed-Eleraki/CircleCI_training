@@ -12,7 +12,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          keys: v1-deps-{{ checksum "package-lock.json" }} 
+          keys: v1-deps-{{ checksum "package-lock.json" }} # 
 
       - run: pip install -r python/requirements.txt
       - run: python python/main.py
