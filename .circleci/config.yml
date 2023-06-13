@@ -16,6 +16,7 @@ jobs:
 
       - run: pip install -r python/requirements.txt
       - run: python python/main.py
+      - run: echo ${Name}
 
       - save_cache:
           key: v1-deps-{{ checksum "package-lock.json" }} 
