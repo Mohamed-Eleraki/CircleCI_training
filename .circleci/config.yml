@@ -28,7 +28,7 @@ jobs:
           name: Run Env Variables
           command: |
             echo "My Name is ${Name}"
-            echo "My Email address is ${email}"
+            echo "My Email address is ${Email}"
 
 
 workflows:
