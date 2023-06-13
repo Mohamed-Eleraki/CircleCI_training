@@ -7,15 +7,15 @@ jobs:
   Build:
 
     docker:
-      - image: cimg/base:stable
+      - image: cimg/docker:stable
 
     steps:
       - checkout
       - setup_remote_docker
-      - use-docker-credentials-store: true
-      - docker/check:
-          - docker-password: DOCKER_PASSWORD
-          - docker-username: DOCKER_LOGIN
+      #- use-docker-credentials-store: true
+      - docker/check
+          #- docker-password: DOCKER_PASSWORD
+          #- docker-username: DOCKER_LOGIN
 
 workflows:
   Docker_Build:
