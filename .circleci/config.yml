@@ -7,7 +7,7 @@ jobs:
   Build:
     docker:
       # replace with your preferred image
-      - image: cimg/python:3.11.4
+      - image: cimg/aws@stable
     steps:
       - checkout
       - run: ls; pwd
