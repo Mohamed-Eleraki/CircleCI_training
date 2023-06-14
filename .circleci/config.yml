@@ -16,7 +16,7 @@ jobs:
           lint-dockerfile: false 
           treat-warnings-as-errors: false 
           use-buildkit: false 
-          path: docker/Dockerfile 
+          path: docker/
 
 workflows:
   Build_Docker:
