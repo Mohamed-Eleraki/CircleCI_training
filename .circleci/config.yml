@@ -7,18 +7,18 @@ jobs:
   Build:
     docker:
       # replace with your preferred image
-      - image: cimg/aws@stable
+      - image: cimg/aws:2023.06
     steps:
       - checkout
       - run: ls; pwd
       #- run: cp docker/Dockerfile /home/circleci/project
       #- docker/check
-      - run:
-          name: Add circleci user to docker group
-          command: |
-            sudo service docker status
-            sudo service docker start
-            sudo usermod -aG docker circleci
+      #- run:
+      #    name: Add circleci user to docker group
+      #    command: |
+      #      sudo service docker status
+      #      sudo service docker start
+      #      sudo usermod -aG docker circleci
       - docker/build:
           dockerfile: docker/Dockerfile
           image: nginx
