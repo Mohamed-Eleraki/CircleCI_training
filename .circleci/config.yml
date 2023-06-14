@@ -22,7 +22,7 @@ jobs:
           dockerfile: Dockerfile
           tag: nginx:1.0
       - docker/run:
-          name: Run Docker image
+          name: Run Docker nginx
           image: nginx
           command: echo "Hello, World!"
       - docker/tag:
