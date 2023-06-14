@@ -7,51 +7,14 @@ jobs:
   Build:
     docker:
       # replace with your preferred image
-      - image: cimg/aws:2023.06
+      - image: cimg/base:stable
     steps:
-      - checkout
-      - run: ls; pwd
-      #- run: cp docker/Dockerfile /home/circleci/project
-      #- docker/check
-      - run:
-          name: Add circleci user to docker group
-          command: |
-            sudo service docker status
-            sudo service docker start
-            sudo usermod -aG docker circleci
       - docker/build:
-          dockerfile: docker/Dockerfile
-          image: nginx
+          image: nginx 
+
 
 workflows:
   Build_Docker:
     jobs:
-      - Build:
-          context:
-            - Docker_Build_Context
+      - Build
 
-
-
-
-
-
-#jobs: 
-#  Build:
-#
-#    docker:
-#      - image: cimg/base:stable
-#
-#    steps:
-#      - checkout
-#      - setup_remote_docker
-#      #- use-docker-credentials-store: true
-#      - docker/check:
-#          - docker-password: DOCKER_PASSWORD
-#          - docker-username: DOCKER_LOGIN
-#
-#workflows:
-#  Docker_Build:
-#    jobs:
-#      - Build:
-#          context:
-#            - Docker_Build_Context
