@@ -10,7 +10,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - docker/build:
-          dockerfile: Docker/Dockerfile
+          dockerfile: /Docker/Dockerfile
           image: nginx_circleci 
 
 workflows:
