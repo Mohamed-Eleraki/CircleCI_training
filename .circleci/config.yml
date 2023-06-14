@@ -16,6 +16,13 @@ jobs:
           docker-password: DOCKER_PASSWORD
           docker-username: DOCKER_LOGIN
 
+      - docker/build:
+          docker-context: docker 
+          dockerfile: docker 
+          image: nginx 
+          lint-dockerfile: false 
+          path: docker 
+
 
 workflows:
   Build_Docker:
@@ -24,7 +31,4 @@ workflows:
           context:
             - Docker_Build_Context
 
-      - docker/publish:
-            image: nginx 
-            path: docker 
 
