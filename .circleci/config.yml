@@ -14,9 +14,9 @@ jobs:
           image: nginx_circleci 
 
 workflows:
-  Build:
+  Build_Docker:
     jobs:
-      - example-job
+      - Build
 
 
 
