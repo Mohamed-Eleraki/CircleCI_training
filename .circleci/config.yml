@@ -8,20 +8,25 @@ jobs:
     docker:
       # replace with your preferred image
       - image: cimg/base:stable
+
+    environment:
+      Name: Mohamed El Eraky
+      Email: Mohamed-ibrahim2021@outlook.com
+
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-
-      - docker/check:
-          docker-password: DOCKER_PASSWORD
-          docker-username: DOCKER_LOGIN
+      #- setup_remote_docker:
+      #    docker_layer_caching: true
+#
+      #- docker/check:
+      #    docker-password: DOCKER_PASSWORD
+      #    docker-username: DOCKER_LOGIN
 
       - run:
-          name: Try to print-out Env-vars
+          name: print out username and email
           command: |
-            echo "$DOCKER_PASSWORD is secure to print here"
-            echo "$DOCKER_LOGIN is secure to print here"
+            echo "$Name is secure to print here"
+            echo "$Email is secure to print here"
 workflows:
   Build_Docker:
     jobs:
