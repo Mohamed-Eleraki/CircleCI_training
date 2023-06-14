@@ -9,6 +9,8 @@ jobs:
       # replace with your preferred image
       - image: cimg/base:stable
     steps:
+      - run: ls; pwd
+      #- docker/check
       - docker/build:
           dockerfile: docker/Dockerfile
           image: nginx
