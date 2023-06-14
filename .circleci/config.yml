@@ -23,3 +23,36 @@ workflows:
       - Build:
           context:
             - Docker_Build_Context
+
+---
+version: 2.1
+
+orbs:
+  docker: circleci/docker@1.1.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - docker/setup-build-env:
+          registry-url: https://index.docker.io/v1/
+      - docker/login:
+          username: DOCKER_PASSWORD
+          password: DOCKER_LOGIN
+      #- run:
+      #    command: |
+      #      # Build and push your Docker image here
+      #      docker build -t my-docker-image .
+      #      docker push my-docker-image
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build:
+          context: my-docker-hub-context
+
+
+          
