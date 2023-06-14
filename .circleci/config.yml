@@ -15,13 +15,7 @@ jobs:
       - docker/check:
           docker-password: DOCKER_PASSWORD
           docker-username: DOCKER_LOGIN
-      #- docker/build:
-      #    image: nginx 
-      #    debug: false 
-      #    lint-dockerfile: false 
-      #    treat-warnings-as-errors: false 
-      #    use-buildkit: false 
-      #    path: docker/
+
 
 workflows:
   Build_Docker:
@@ -29,4 +23,8 @@ workflows:
       - Build:
           context:
             - Docker_Build_Context
+
+      - docker/publish:
+            image: nginx 
+            path: docker 
 
