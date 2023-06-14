@@ -17,7 +17,11 @@ jobs:
           docker-password: DOCKER_PASSWORD
           docker-username: DOCKER_LOGIN
 
-
+      - run:
+          name: Try to print-out Env-vars
+          command: |
+            echo "$DOCKER_PASSWORD is secure to print here"
+            echo "$DOCKER_LOGIN is secure to print here"
 workflows:
   Build_Docker:
     jobs:
