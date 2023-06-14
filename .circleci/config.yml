@@ -10,7 +10,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - run: ls; pwd
-      - run: cp /docker/Dockerfile /home/circleci/project
+      - run: cp docker/Dockerfile /home/circleci/project
       #- docker/check
       - docker/build:
           dockerfile: docker/Dockerfile
