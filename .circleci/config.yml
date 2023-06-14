@@ -11,7 +11,7 @@ jobs:
     steps:
       - docker/build:
           dockerfile: docker/Dockerfile
-          image: nginx_circleci 
+          image: nginx
 
 workflows:
   Build_Docker:
