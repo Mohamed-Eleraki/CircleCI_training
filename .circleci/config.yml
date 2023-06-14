@@ -12,8 +12,7 @@ jobs:
       - checkout
       - run: ls; pwd
       #- run: cp docker/Dockerfile /home/circleci/project
-      #- docker/check
-
+      - docker/check
       - docker/build:
           dockerfile: docker/Dockerfile
           image: nginx
