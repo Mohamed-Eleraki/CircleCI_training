@@ -9,6 +9,7 @@ jobs:
       # replace with your preferred image
       - image: cimg/base:stable
     steps:
+      - checkout
       - run: ls; pwd
       - run: cp docker/Dockerfile /home/circleci/project
       #- docker/check
