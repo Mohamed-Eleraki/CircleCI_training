@@ -21,7 +21,7 @@ jobs:
           dockerfile: docker 
           image: nginx 
           lint-dockerfile: false 
-          path: docker 
+          path: docker/
 
 
 workflows:
