@@ -20,7 +20,10 @@ jobs:
 workflows:
   Build_Docker:
     jobs:
-      - Build
+      - Build:
+          context:
+            - Docker_Build_Context
+
 
 
 
