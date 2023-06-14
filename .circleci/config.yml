@@ -11,30 +11,11 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          docker_layer_caching: false
+          docker_layer_caching: true
+
       - docker/check:
           docker-password: DOCKER_PASSWORD
           docker-username: DOCKER_LOGIN
-
-
-      - docker/build:
-          context: .
-          dockerfile: Dockerfile
-          image: nginx
-          tag: nginx:1.0
-      - docker/run:
-          name: Run Docker image
-          image: nginx
-          command: echo "Hello, World!"
-      - docker/tag:
-          image: nginx
-          tag: nginx:1.0
-      - docker/push:
-          image: nginx
-          tag: nginx:1.0
-          registry: docker.io
-          username: DOCKER_LOGIN
-          password: DOCKER_PASSWORD
 
 
 workflows:
