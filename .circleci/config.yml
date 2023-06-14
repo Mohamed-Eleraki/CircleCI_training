@@ -11,7 +11,11 @@ jobs:
     steps:
       - docker/build:
           image: nginx 
-
+          debug: false 
+          lint-dockerfile: false 
+          treat-warnings-as-errors: false 
+          use-buildkit: false 
+          path: docker/Dockerfile 
 
 workflows:
   Build_Docker:
