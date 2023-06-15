@@ -21,7 +21,7 @@ jobs:
           name: copy tests result for storing
           command: |
             mkdir test_result
-            cp test_result test_result/
+            cp -r test_result test_result/
           when: always
 
       - store_test_results:
