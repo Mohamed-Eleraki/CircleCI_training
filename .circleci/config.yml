@@ -16,11 +16,14 @@ jobs:
       #- run: pip install -r python/requirements.txt
       - python/install-packages:
           pkg-manager: pip
+          
+      - python/install-packages:
+          pkg-manager: pip
           app-dir: python/  # If your requirements.txt isn't in the root directory.
           args: pytest
-          pkg-manager: pipenv
           pypi-cache: false
       - run:
+          name: Test
           command: |
             pytest --version
 
