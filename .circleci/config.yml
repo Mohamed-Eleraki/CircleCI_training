@@ -25,8 +25,8 @@ jobs:
 workflows:
   python_App:
     jobs:
-      - Build
-      - python/test:
-          args: '--dev'
-          #pkg-manager: pipenv
-          test-tool: pytest
+      - Build:
+          python/test:
+            args: '--dev'
+            #pkg-manager: pipenv
+            test-tool: pytest
