@@ -1,0 +1,35 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+jobs:
+  Build_and_test:
+
+    docker:
+      - image: cimg/node:20.3.0
+
+    steps:
+      - checkout
+      - node/install-packages
+
+      - run:
+          name: run tests
+          command: | 
+            npm run test-ci
+
+      - run: 
+          name: copy tests result for storing
+          command: |
+            mkdir test_results
+            cp -r test-results.xml test_results/
+          when: always
+
+      - store_test_results:
+          path: test-results
+workflows:
+  Build_Docker:
+    jobs:
+      - Build_and_test
+
+
