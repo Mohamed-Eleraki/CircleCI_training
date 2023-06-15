@@ -20,13 +20,13 @@ jobs:
 
 
       - run: python python/main.py
-
+      
+      - python/test:
+          args: '--dev'
+          pkg-manager: pipenv
+          test-tool: pytest
 
 workflows:
   python_App:
     jobs:
-      - Build:
-          python/test:
-            args: '--dev'
-            #pkg-manager: pipenv
-            test-tool: pytest
+      - Build
