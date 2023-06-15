@@ -25,7 +25,8 @@ jobs:
       - run:
           name: Test
           command: |
-            pytest --help
+            cd python/
+            pytest
 
 
       - run: python python/main.py
