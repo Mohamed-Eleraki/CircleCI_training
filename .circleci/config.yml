@@ -20,12 +20,12 @@ jobs:
       - run: 
           name: copy tests result for storing
           command: |
-            mkdir test-result
-            cp test-result.xml test-result/
+            mkdir test_result
+            cp test_result.xml test_result/
           when: always
 
       - store_test_results:
-          path: test-result/test-result.xml
+          path: test_result
 workflows:
   Build_Docker:
     jobs:
