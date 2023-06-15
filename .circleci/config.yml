@@ -17,4 +17,8 @@ jobs:
      - run: docker build -t webapp:$CIRCLE_BRANCH docker/.
 
      # deploy the image
-     - run: docker push webapp:$CIRCLE_BRANCH
+     #- run: docker push webapp:$CIRCLE_BRANCH
+
+     - run: |
+         docker tag webapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:1.1
+         docker push mohamedibrahimeleraki/main:1.1
