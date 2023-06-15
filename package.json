@@ -7,8 +7,6 @@
     "test": "node test.js"
   },
   "author": "package",
-  "license": "MIT",
-  "dependencies": {
-    "dependency-name": "Mohamed"
-  }
+  "license": "MIT"
+  
 }
