@@ -25,7 +25,7 @@ jobs:
           when: always
 
       - store_test_results:
-          path: test-result
+          path: test-result.xml
 workflows:
   Build_Docker:
     jobs:
