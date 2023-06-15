@@ -28,5 +28,5 @@ workflows:
       - Build
       - python/test:
           args: '--dev'
-          pkg-manager: pipenv
+          #pkg-manager: pipenv
           test-tool: pytest
