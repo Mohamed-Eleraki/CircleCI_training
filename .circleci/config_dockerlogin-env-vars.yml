@@ -1,0 +1,61 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.1.4
+
+jobs:
+  Build:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+
+    environment:
+      Name: Mohamed El Eraky
+      Email: Mohamed-ibrahim2021@outlook.com
+
+    steps:
+      - checkout
+      #- setup_remote_docker:
+      #    docker_layer_caching: true
+#
+      #- docker/check:
+      #    docker-password: DOCKER_PASSWORD
+      #    docker-username: DOCKER_LOGIN
+
+      - run:
+          name: print out username and email
+          command: |
+            echo "$Name is my name"
+            echo "$Email is my email"
+
+  Build_two:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+
+    environment:
+      Name: Sama El Eraky
+      Email: Sama-Mohamed@outlook.com
+
+    steps:
+      - checkout
+      #- setup_remote_docker:
+      #    docker_layer_caching: true
+#
+      #- docker/check:
+      #    docker-password: DOCKER_PASSWORD
+      #    docker-username: DOCKER_LOGIN
+
+      - run:
+          name: print out username and email
+          command: |
+            echo "$Name is my my Name"
+            echo "$Email is my email"
+workflows:
+  Build_Docker:
+    jobs:
+      - Build
+      - Build_two
+
+
+
