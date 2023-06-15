@@ -24,7 +24,7 @@ jobs:
             cp test-result.xml test-result/
           when: always
 
-      - store_test_result:
+      - store_test_results:
           path: test-result
 workflows:
   Build_Docker:
