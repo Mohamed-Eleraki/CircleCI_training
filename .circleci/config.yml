@@ -18,14 +18,14 @@ jobs:
           pkg-manager: pip
 
       - python/install-packages:
-          pkg-manager: pip
+          pkg-manager: pip python/requirements.txt
           app-dir: python/  # If your requirements.txt isn't in the root directory.
           args: pytest
           pypi-cache: false
       - run:
           name: Test
           command: |
-            pytest python/
+            pytest --help
 
 
       - run: python python/main.py
