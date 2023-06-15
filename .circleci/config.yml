@@ -17,7 +17,8 @@ jobs:
           name: run tests
           command: | 
             #npm run test-ci
-            npm run
+            npm run test.js
+            #npm run
             #npm help ci
 
       - run: 
