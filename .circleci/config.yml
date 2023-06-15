@@ -17,17 +17,17 @@ jobs:
           name: run tests
           command: | 
             npm run test-ci
-            npm help ci
+            #npm help ci
 
       - run: 
           name: copy tests result for storing
           command: |
-            mkdir test_result
-            cp -r test-result.xml test_result/
+            mkdir test_results
+            cp -r test-results.xml test_results/
           when: always
 
       - store_test_results:
-          path: test-result
+          path: test-results
 workflows:
   Build_Docker:
     jobs:
