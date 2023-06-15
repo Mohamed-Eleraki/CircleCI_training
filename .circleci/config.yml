@@ -26,7 +26,7 @@ jobs:
           name: Test
           command: |
             cd ~/python/
-            pytest ~/python/
+            pytest -T python/
 
 
       - run: python python/main.py
