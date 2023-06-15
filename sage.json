@@ -1,0 +1,14 @@
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "description": "My project description",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "dependency-name": "^1.0.0"
+  }
+}
