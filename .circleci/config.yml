@@ -12,25 +12,28 @@ jobs:
 
    steps:
      - checkout
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
-     
+
+     # Login with credentials stored in the UI
      - run: 
           name: Docker login
           command: |
             echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
-            docker run -d --name monogdb mongo
-            docker ps
+            #docker run -d --name monogdb mongo
+            #docker ps
 
      # build the application image
-     - run: docker build -t webapp:$CIRCLE_BRANCH docker/.
+     - run:
+          name: Docker image build 
+          command: |
+            docker build -t webapp:$CIRCLE_BRANCH docker/.
 
      # deploy the image
      #- run: docker push webapp:$CIRCLE_BRANCH
-
-     - run: |
-         docker tag webapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:webapp1.1
-         docker push mohamedibrahimeleraki/main:webapp1.1
+     - run: 
+          name: Push the image to DOCKER HUB
+          command: |
+            docker tag webapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:webapp1.1
+            docker push mohamedibrahimeleraki/main:webapp1.1
 
 workflows:
   Docker_Build_and_Scan:
