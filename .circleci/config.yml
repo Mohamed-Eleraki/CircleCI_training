@@ -52,6 +52,11 @@ jobs:
            cd docker/node-package
            snyk test --file=./package.json
 
+     - run:
+         name: Snyk test
+         command: |
+           snyk code test
+
 
 
 workflows:
