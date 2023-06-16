@@ -62,6 +62,7 @@ jobs:
 
    steps:
      - checkout
+     - snyk/install
      - run:
          name: Snyk test
          command: |
@@ -74,5 +75,6 @@ workflows:
       - build_and_scan:
           context: Docker_Build_Context
       - scan:
+          requires: [build_and_scan]
           context: Docker_Build_Context
     
