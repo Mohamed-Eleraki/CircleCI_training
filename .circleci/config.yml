@@ -10,71 +10,129 @@ executors:
       docker_layer_caching: true 
 
 jobs:
- build_and_scan:
+ build:
     
    executor: ubuntu_20-04-executor
 
    steps:
      - checkout
+
+     - restore_cache:
+         keys: [nodeAppBuild]
 
      # Login with credentials stored in the UI
      - run: 
           name: Docker login
           command: |
             echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
-            #docker run -d --name monogdb mongo
-            #docker ps
 
      # build the application image
      - run:
           name: Docker image build 
           command: |
             docker build -t node:$CIRCLE_BRANCH docker/.
+            docker images
+     
+     # Run the image in a container
+     - run:
+          name: Docker run
+          command: |
+            docker run -p 3000:3000 node:$CIRCLE_BRANCH
 
-     # deploy the image
-     #- run: docker push node:$CIRCLE_BRANCH
+     # save cache
+     - save_cache:
+         paths: [docker/save_cache]
+         key: nodeAppBuild
+
+ Test:
+   executor: ubuntu_20-04-executor
+
+   steps:
+     - checkout
+
+     - restore_cache:
+         keys: [nodeAppBuild]
+
+     - snyk/install
+     - run:
+         name: Snyk code test
+         command: |
+           snyk code test
+
+     - run:
+         name: Contianer test
+         command: |
+           # write down your test code here
+           docker ps
+
+     # save cache
+     - save_cache:
+         paths: [docker/save_cache]
+         key: nodeAppBuild
+
+
+ Scan:
+   executor: ubuntu_20-04-executor
+
+   steps:
+     - checkout
+
+     - restore_cache:
+         keys: [nodeAppBuild]
+
+     - snyk/install
+
+     # code scan
+     - run:
+         name: Snyk Code Scan
+         command: |
+           cd docker/node-package
+           snyk test --file=./package.json
+     
+     # image scan
+     - snyk/scan:
+         docker-image-name: node:$CIRCLE_BRANCH
+
+     # save cache
+     - save_cache:
+         paths: [docker/save_cache]
+         key: nodeAppBuild
+
+
+ Push-Image:
+   executor: ubuntu_20-04-executor
+
+   steps:
+     - checkout
+
+     - restore_cache:
+         keys: [nodeAppBuild]
+
+     # Push the image
      - run: 
           name: Push the image to DOCKER HUB
           command: |
             #docker tag node:$CIRCLE_BRANCH mohamedibrahimeleraki/main:node1.1
             #docker push mohamedibrahimeleraki/main:node1.1
 
-     # Container Scan
-     #- snyk/scan:
-     #     fail-on-issues: true
-     #     monitor-on-build: true #
-
-
-     - snyk/install
-     - run:
-         name: Snyk Scan
-         command: |
-           cd docker/node-package
-           snyk test --file=./package.json
-
-     - run:
-         name: Snyk test
-         command: |
-           snyk code test
-
- scan:
-   executor: ubuntu_20-04-executor
-
-   steps:
-     - checkout
-     - snyk/install
-     - run:
-         name: Snyk test
-         command: |
-           snyk code test
+     # save cache
+     - save_cache:
+         paths: [docker/save_cache]
+         key: nodeAppBuild
 
 
 workflows:
   Node-app:
     jobs:
-      - build_and_scan:
+      - build:
           context: Docker_Build_Context
-      - scan:
-          requires: [build_and_scan]
+      - Test:
+          requires: [build]
           context: Docker_Build_Context
-    
+      - Scan:
+          requires: [build]
+          context: Docker_Build_Context
+      - Push-Image:
+          requires: [Scan, Test]
+          context: Docker_Build_Context
+
