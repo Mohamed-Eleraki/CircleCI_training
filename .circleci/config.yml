@@ -10,7 +10,7 @@ executors:
       docker_layer_caching: true 
 
 jobs:
- build:
+ build-image:
     
    executor: ubuntu_20-04-executor
 
@@ -110,6 +110,12 @@ jobs:
      - restore_cache:
          keys: [nodeAppBuild]
 
+     # Login with credentials stored in the UI
+     - run: 
+          name: Docker login
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
+
      # Push the image
      - run: 
           name: Push the image to DOCKER HUB
@@ -127,13 +133,13 @@ jobs:
 workflows:
   Node-app:
     jobs:
-      - build:
+      - build-image:
           context: Docker_Build_Context
       - Test:
-          requires: [build]
+          requires: [build-image]
           context: Docker_Build_Context
       - Scan:
-          requires: [build]
+          requires: [Test]
           context: Docker_Build_Context
       - Push-Image:
           requires: [Scan, Test]
