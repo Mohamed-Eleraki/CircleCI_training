@@ -57,6 +57,15 @@ jobs:
          command: |
            snyk code test
 
+ scan:
+   executor: ubuntu_20-04-executor
+
+   steps:
+     - checkout
+     - run:
+         name: Snyk test
+         command: |
+           snyk code test
 
 
 workflows:
@@ -64,5 +73,6 @@ workflows:
     jobs:
       - build_and_scan:
           context: Docker_Build_Context
-
+      - scan:
+          context: Docker_Build_Context
     
