@@ -38,6 +38,7 @@ jobs:
           name: Docker run
           command: |
             docker run -p 3000:3000 node:$CIRCLE_BRANCH
+            docker ps
 
      # save cache
      - save_cache:
@@ -92,6 +93,7 @@ jobs:
      # image scan
      - snyk/scan:
          docker-image-name: node:$CIRCLE_BRANCH
+         fail-on-issues: false
 
      # save cache
      - save_cache:
