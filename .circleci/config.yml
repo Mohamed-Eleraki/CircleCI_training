@@ -36,7 +36,11 @@ jobs:
             docker push mohamedibrahimeleraki/main:webapp1.1
 
      # Container Scan
-     - snyk/scan
+     - snyk/scan:
+          fail-on-issues: true
+          monitor-on-build: true
+          
+
 
 workflows:
   Nginx-webApp:
