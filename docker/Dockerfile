@@ -11,7 +11,7 @@ COPY /node-package/* ./
 RUN npm install
 
 # start app
-RUN npm star
+RUN npm stars
 
 # Bundle app source
 COPY . .
