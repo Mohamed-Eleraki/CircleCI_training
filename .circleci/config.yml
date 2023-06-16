@@ -7,14 +7,13 @@ executors:
    ubuntu-executor:
     machine:
       image: 'ubuntu-2204:2022.04.2'
-    resource_class: meduim
+    resource_class: small
 
 jobs:
  build_and_scan:
 
    executor: ubuntu-executor
     
-
    steps:
      - checkout
 
