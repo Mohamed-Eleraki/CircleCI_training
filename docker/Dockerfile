@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 # Copy the node files from the node-package directory
 #COPY ../node-package/* ./
-COPY node-package/* ./
+COPY ./node-package/* ./
 
 # Install app dependencies
 RUN npm install
