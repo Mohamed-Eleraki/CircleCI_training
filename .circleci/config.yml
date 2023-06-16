@@ -3,13 +3,16 @@ version: 2.1
 orbs:
   snyk: snyk/snyk@1.7.0
 
+executors:
+   ubuntu-executor:
+    machine:
+      image: 'ubuntu-2204:2022.04.2'
+    resource_class: meduim
+
 jobs:
  build_and_scan:
 
-   machine:
-    image: ubuntu-2204:2022.04.2
-    docker_layer_caching: true 
-   resource_class: meduim
+   executor: ubuntu-executor
     
 
    steps:
