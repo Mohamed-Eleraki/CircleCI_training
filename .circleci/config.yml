@@ -35,8 +35,11 @@ jobs:
             docker tag webapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:webapp1.1
             docker push mohamedibrahimeleraki/main:webapp1.1
 
+     # Container Scan
+     - snyk/scan
+
 workflows:
-  Docker_Build_and_Scan:
+  Nginx-webApp:
     jobs:
       - build_and_scan
 
