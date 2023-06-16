@@ -142,6 +142,6 @@ workflows:
           requires: [Test]
           context: Docker_Build_Context
       - Push-Image:
-          requires: [Scan, Test]
+          requires: [Scan]
           context: Docker_Build_Context
 
