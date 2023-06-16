@@ -9,6 +9,8 @@ jobs:
    machine:
     image: ubuntu-2204:2022.04.2
     docker_layer_caching: true 
+   resource_class: meduim
+    
 
    steps:
      - checkout
@@ -39,7 +41,7 @@ jobs:
      - snyk/scan:
           fail-on-issues: true
           monitor-on-build: true
-          
+
 
 
 workflows:
