@@ -114,8 +114,8 @@ jobs:
      - run: 
           name: Push the image to DOCKER HUB
           command: |
-            #docker tag node:$CIRCLE_BRANCH mohamedibrahimeleraki/main:node1.1
-            #docker push mohamedibrahimeleraki/main:node1.1
+            docker tag node:$CIRCLE_BRANCH mohamedibrahimeleraki/main:node1.1
+            docker push mohamedibrahimeleraki/main:node1.1
 
      # save cache
      - save_cache:
