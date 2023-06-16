@@ -10,6 +10,9 @@ COPY /node-package/* ./
 # Install app dependencies
 RUN npm install
 
+# start app
+RUN npm start
+
 # Bundle app source
 COPY . .
 
