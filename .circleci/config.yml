@@ -45,15 +45,6 @@ jobs:
           monitor-on-build: true #
 
 
-
-    - run:
-        name: Snyk Scan
-        command: |
-          cd docker/node-package
-          snyk test --file=./package.json
-
-
-
 workflows:
   Node-app:
     jobs:
