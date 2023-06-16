@@ -1,11 +1,19 @@
-# Use the official Nginx image as the base image
-FROM nginx:latest
+FROM node:latest
 
-# Install the curl package
-RUN apt-get update && apt-get install -y curl
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy the custom Nginx configuration file to the container
-#COPY nginx.conf /etc/nginx/nginx.conf
+# Copy the node files from the node-package directory
+COPY ../node-package/* ./
 
-# Expose port 80 for incoming traffic
-EXPOSE 80
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose the port that the app will run on
+EXPOSE 3000
+
+# Start the app
+CMD [ "npm", "start" ]

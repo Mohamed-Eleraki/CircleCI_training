@@ -29,15 +29,15 @@ jobs:
      - run:
           name: Docker image build 
           command: |
-            docker build -t webapp:$CIRCLE_BRANCH docker/.
+            docker build -t node:$CIRCLE_BRANCH docker/.
 
      # deploy the image
-     #- run: docker push webapp:$CIRCLE_BRANCH
+     #- run: docker push node:$CIRCLE_BRANCH
      - run: 
           name: Push the image to DOCKER HUB
           command: |
-            docker tag webapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:webapp1.1
-            docker push mohamedibrahimeleraki/main:webapp1.1
+            #docker tag node:$CIRCLE_BRANCH mohamedibrahimeleraki/main:node1.1
+            #docker push mohamedibrahimeleraki/main:node1.1
 
      # Container Scan
      - snyk/scan:
@@ -47,7 +47,7 @@ jobs:
 
 
 workflows:
-  Nginx-webApp:
+  Node-app:
     jobs:
       - build_and_scan:
           context: Docker_Build_Context
