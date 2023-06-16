@@ -4,9 +4,8 @@
   "description": "My project description",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "start": "echo 'No start script defined'"
   },
-  "author": "package",
+  "author": "Your Name",
   "license": "MIT"
-  
 }
