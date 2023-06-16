@@ -40,9 +40,18 @@ jobs:
             #docker push mohamedibrahimeleraki/main:node1.1
 
      # Container Scan
-     - snyk/scan:
-          fail-on-issues: true
-          monitor-on-build: true #
+     #- snyk/scan:
+     #     fail-on-issues: true
+     #     monitor-on-build: true #
+
+
+
+     - run:
+         name: Snyk Scan
+         command: |
+           cd docker/node-package
+           snyk test --file=./package.json
+
 
 
 workflows:
