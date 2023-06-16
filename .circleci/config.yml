@@ -30,14 +30,14 @@ jobs:
      - run:
           name: Docker image build 
           command: |
-            docker build -t node:$CIRCLE_BRANCH1 docker/.
+            docker build -t nodeapp:$CIRCLE_BRANCH docker/.
             docker images
      
      # Run the image in a container
      - run:
           name: Docker run
           command: |
-            docker run -p 3000:3000 node:$CIRCLE_BRANCH1
+            docker run -p 3000:3000 nodeapp:$CIRCLE_BRANCH
             docker ps
 
      # save cache
@@ -92,7 +92,7 @@ jobs:
      
      # image scan
      - snyk/scan:
-         docker-image-name: node:$CIRCLE_BRANCH1
+         docker-image-name: nodeapp:$CIRCLE_BRANCH
          fail-on-issues: false
 
      # save cache
@@ -115,7 +115,7 @@ jobs:
           name: Push the image to DOCKER HUB
           command: |
             docker images
-            docker tag node:$CIRCLE_BRANCH1 mohamedibrahimeleraki/main:node1.1
+            docker tag nodeapp:$CIRCLE_BRANCH mohamedibrahimeleraki/main:node1.1
             docker push mohamedibrahimeleraki/main:node1.1
 
      # save cache
