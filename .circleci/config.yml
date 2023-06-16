@@ -42,7 +42,6 @@ workflows:
   Nginx-webApp:
     jobs:
       - build_and_scan:
-          context: |
-            - Docker_Build_Context
+          context: Docker_Build_Context
 
     
