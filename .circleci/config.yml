@@ -45,7 +45,7 @@ jobs:
      #     monitor-on-build: true #
 
 
-
+     - snyk/install
      - run:
          name: Snyk Scan
          command: |
