@@ -20,7 +20,7 @@ jobs:
      - restore_cache:
          keys: [nodeAppBuild]
 
-     # Login with credentials stored in the UI
+     # Login with credentials stored in the UI "context"
      - run: 
           name: Docker login
           command: |
@@ -54,11 +54,6 @@ jobs:
      - restore_cache:
          keys: [nodeAppBuild]
 
-     - snyk/install
-     - run:
-         name: Snyk code test
-         command: |
-           snyk code test
 
      - run:
          name: Contianer test
@@ -83,7 +78,13 @@ jobs:
 
      - snyk/install
 
-     # code scan
+     # Project code scan
+     - run:
+         name: Snyk code test
+         command: |
+           snyk code test
+
+     # package file code scan
      - run:
          name: Snyk Code Scan
          command: |
