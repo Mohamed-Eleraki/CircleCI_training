@@ -1,8 +1,10 @@
 version: 2.1
 
+# Define snyk orb for code scanning
 orbs:
   snyk: snyk/snyk@1.7.0
 
+# Defince executor machine as a parameter
 executors:
    ubuntu_20-04-executor:
     machine:
@@ -11,13 +13,16 @@ executors:
 
 jobs:
 
+# Build docker image job
  build-image:
-    
+   
+   # Fetch the executor defined above
    executor: ubuntu_20-04-executor
 
 
    steps:
-     - checkout
+
+     - checkout  # code checkout from repo
 
      - restore_cache:
          keys: [nodeAppBuild]
@@ -42,26 +47,29 @@ jobs:
             docker run -p 3000:3000 nodeapp:$CIRCLE_BRANCH
             docker ps
 
-     # save cache
+     # save cache, to use the built image in the next jobs for testing and scaning
      - save_cache:
          paths: [docker/save_cache]
          key: nodeAppBuild
 
  Test:
+
+   # Fetch the executor defined above
    executor: ubuntu_20-04-executor
 
    steps:
+
      - checkout
 
      - restore_cache:
          keys: [nodeAppBuild]
 
 
-     - run:
+     - run:  # here type your own code for testing the application
          name: Contianer test
          command: |
            # write down your test code here
-           docker ps
+           docker images
 
      # save cache
      - save_cache:
@@ -70,6 +78,8 @@ jobs:
 
 
  Scan:
+
+   # Fetch the executor defined above
    executor: ubuntu_20-04-executor
 
    steps:
@@ -78,6 +88,7 @@ jobs:
      - restore_cache:
          keys: [nodeAppBuild]
 
+     # Install the snyk command using the snyk orb definced above
      - snyk/install
 
      # Project code scan
@@ -105,15 +116,18 @@ jobs:
 
 
  Push-Image:
+
+   # Fetch the executor defined above
    executor: ubuntu_20-04-executor
 
    steps:
+
      - checkout
 
      - restore_cache:
          keys: [nodeAppBuild]
 
-     # Login with credentials stored in the UI
+     # Login with credentials stored in the UI "context"
      - run: 
           name: Docker login
           command: |
@@ -137,14 +151,14 @@ workflows:
   Node-app:
     jobs:
       - build-image:
-          context: Docker_Build_Context
+          context: Docker_Build_Context  # fetch the environment variables from the context
       - Test:
           requires: [build-image]
-          context: Docker_Build_Context
+          context: Docker_Build_Context  # fetch the environment variables from the context
       - Scan:
           requires: [Test]
-          context: Docker_Build_Context
+          context: Docker_Build_Context  # fetch the environment variables from the context
       - Push-Image:
           requires: [Scan]
-          context: Docker_Build_Context
+          context: Docker_Build_Context  # fetch the environment variables from the context
 
